@@ -383,10 +383,35 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         });
     }
 
+    private void setAddInfo(int i, String title, String val) {
+        if (i == 0) {
+            ImageView div = (ImageView) findViewById(R.id.divider);
+            TextView header = (TextView) findViewById(R.id.header_context1);
+            EditText field = (EditText) findViewById(R.id.context1);
+            header.setText(title);
+            field.setText(val);
+            div.setVisibility(View.VISIBLE);
+        }
+        if (i == 1) {
+            TextView header = (TextView) findViewById(R.id.header_context2);
+            EditText field = (EditText) findViewById(R.id.context2);
+            header.setText(title);
+            field.setText(val);
+        }
+        if (i == 2) {
+            TextView header = (TextView) findViewById(R.id.header_context3);
+            EditText field = (EditText) findViewById(R.id.context3);
+            header.setText(title);
+            field.setText(val);
+        }
+    }
+
     private void populateConfirmationView(View v, Document d) {
+        int i = 0;
         this.currentDoc = d;
 
         Map<String, String> context = d.getContext();
+        Map<String, String> numbers = d.getNumbers();
         Bitmap bitmapImage = d.getBitmap();
 
         EditText companyEdit = (EditText) v.findViewById(R.id.company);
@@ -400,14 +425,27 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             category.setText(d.getCategory());
             category.setVisibility(View.VISIBLE);
         }
-
-        //companyEdit.setText(d.getSender());
-        companyEdit.setText("Zurich Insurance");
-        typeEdit.setText(d.getType());
-        imageView.setImageBitmap(bitmapImage);
+        if (!d.getSender().isEmpty())
+        {
+            companyEdit.setText(d.getSender());
+        }
+        if(!d.getType().isEmpty()) {
+            typeEdit.setText(d.getType());
+        }
 
         if (context.containsKey("dateCreation")) {
             dateEdit.setText(context.get("dateCreation"));
+        }
+
+
+        imageView.setImageBitmap(bitmapImage);
+
+        if (numbers.containsKey("socialSecurityNumber")) {
+            setAddInfo(i, "Social security number", numbers.get("socialSecurityNumber"));
+            i++;
+        }
+        if (context.containsKey("dateEndOfContract")) {
+            setAddInfo(i++, "End of contract", context.get("dateEndOfContract"));
         }
     }
 
