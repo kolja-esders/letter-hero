@@ -378,7 +378,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     public void run() {
                         try {
                             
-                            String url = "http://1027cf3f.ngrok.io/obrec/";
+                            String url = "http://2702645a.ngrok.io/obrec/";
                             //String url = "http://d00d8906.ngrok.io/obrec/";
                             URL obj = new URL(url);
 
