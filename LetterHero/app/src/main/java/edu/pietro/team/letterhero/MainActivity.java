@@ -41,6 +41,7 @@ import com.google.android.gms.vision.text.TextRecognizer;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -340,8 +341,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     @Subscribe
     public void onMessageEvent(OnImageCaptureRequested e) {
-        final String ENDPOINT_TEXT = "http://2702645a.ngrok.io/textrec/text";
-        final String ENDPOINT_IMAGE = "http://2702645a.ngrok.io/textrec/image";
+
         Log.d("EVENT_BUS", "Image capture requested.");
 
         //if (!onTryStartProcessing(ProcessingState.OBJECT_LOCK)){
@@ -359,8 +359,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     @Override
                     public void run() {
                         try {
-                            URL imageUrl = new URL(ENDPOINT_IMAGE);
-                            URL textUrl = new URL(ENDPOINT_TEXT);
 
                             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                             Log.d("Image resolution", bitmap.getWidth() + " x " + bitmap.getHeight());
@@ -380,18 +378,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                                     }
                                 }
                             }
-                            String detectedText = detectedTextBuilder.toString();
 
+                            // Potentially add unique id to both send operations
 
+                            sendImage(bitmap);
+                            sendText(detectedTextBuilder.toString());
 
-                            Log.d("Main", detectedText);
-
-                            //int newHeight = (int) (bitmap.getHeight() * 0.6);
-                            //int hOffset = (bitmap.getHeight() - newHeight) / 2;
-                            //bitmap = Bitmap.createBitmap(bitmap, 0, hOffset, bitmap.getWidth(), bitmap.getHeight() - hOffset);
-                            //bitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, false);
-
-                            // Compress image
 
 
                             //final JSONObject jsonProd = new JSONObject(prdResp);
@@ -472,7 +464,17 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         ibanEdit.setEnabled(!isPurchase);
     }
 
-    private void sendImage(Bitmap bitmap, URL endpoint) {
+    private void sendImage(Bitmap bitmap) {
+        final String ENDPOINT_IMAGE = "http://2702645a.ngrok.io/textrec/image";
+        final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
+
+        URL url = null;
+        try {
+            url = new URL(ENDPOINT_IMAGE);
+        } catch (Exception e) {
+            // Ignore
+        }
+
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
@@ -490,11 +492,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             e.printStackTrace();
         }
 
-        final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
-        RequestBody req = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("userid", "8457851245")
+
+        RequestBody req = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("id", "d09ncu091bc3")
                 .addFormDataPart("file", filename, RequestBody.create(MEDIA_TYPE_PNG, file)).build();
         Request request = new Request.Builder()
-                .url(endpoint)
+                .url(url)
                 .post(req)
                 .build();
 
@@ -507,11 +511,45 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             e.printStackTrace();
         }
 
-        Log.d("Response:", responseStr);
+        Log.d("[sendImage]", "Response: " + responseStr);
     }
 
-    private void sendText() {
+    private void sendText(String text) {
+        final String ENDPOINT_TEXT = "http://2702645a.ngrok.io/textrec/text";
+        final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
+        URL url = null;
+        try {
+            url = new URL(ENDPOINT_TEXT);
+        } catch (Exception e) {
+            // Ignore
+        }
+
+        RequestBody body = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("id", "d09ncu091bc3")
+                .addFormDataPart("text", text).build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        String responseStr = "";
+        try {
+            Response response = client.newCall(request).execute();
+            responseStr = response.body().string();
+
+            JSONObject json = new JSONObject(responseStr);
+            String type = json.getString("type");
+            String dateOfLetter = json.getString("type");
+            String company = json.getString("sender");
+
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("[sendText]", "Response: " + responseStr);
     }
 
     public void disableScrolling() {
