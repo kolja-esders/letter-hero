@@ -1,6 +1,6 @@
 package edu.pietro.team.letterhero.entities;
 
-import android.media.Image;
+import android.graphics.Bitmap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class Document {
 
-    private Image mImage;
+    private Bitmap mBitmap;
 
     private String mType;
 
@@ -23,12 +23,12 @@ public class Document {
 
     private Map<String, String> mContext;
 
-    public Image getImage() {
-        return mImage;
+    public Bitmap getBitmap() {
+        return mBitmap;
     }
 
-    public void setImage(Image image) {
-        this.mImage = image;
+    public void setBitmap(Bitmap bitmap) {
+        this.mBitmap = bitmap;
     }
 
     public String getType() {

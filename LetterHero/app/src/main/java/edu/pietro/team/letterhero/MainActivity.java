@@ -316,9 +316,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         Log.d("EVENT_BUS", "Image capture requested.");
 
-        //if (!onTryStartProcessing(ProcessingState.OBJECT_LOCK)){
-        //    return;
-        //}
+        /*if (!onTryStartProcessing(ProcessingState.OBJECT_LOCK)){
+            return;
+        }*/
 
         mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
             @RequiresApi(api = Build.VERSION_CODES.M)
@@ -357,6 +357,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             JSONObject response = sendText(detectedTextBuilder.toString());
 
                             Document doc = Document.fromJSON(response);
+                            doc.setBitmap(bitmap);
 
                             EventBus.getDefault().post(new OnDocumentProcessed(
                                     doc,
@@ -383,12 +384,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         this.currentDoc = d;
 
         Map<String, String> context = d.getContext();
-        Image img = d.getImage();
-
-        ByteBuffer buffer = img.getPlanes()[0].getBuffer();
-        byte[] bytes = new byte[buffer.capacity()];
-        buffer.get(bytes);
-        Bitmap bitmapImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
+        Bitmap bitmapImage = d.getBitmap();
 
         EditText companyEdit = (EditText) v.findViewById(R.id.company);
         EditText dateEdit = (EditText) v.findViewById(R.id.date);
