@@ -51,6 +51,7 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import edu.pietro.team.letterhero.entities.Document;
 import edu.pietro.team.letterhero.event.FeedFilterClicked;
@@ -351,11 +352,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                                 }
                             }
 
-                            // Potentially add unique id to both send operations
+                            // add unique id to both send operations
+                            String id = UUID.randomUUID().toString();
 
-                            //sendImage(bitmap);
-                            JSONObject response = sendText(detectedTextBuilder.toString());
+                            //sendImage(bitmap, id);
+                            JSONObject response = sendText(detectedTextBuilder.toString(), id);
 
+                            System.out.println("json received: " + response.toString());
                             Document doc = Document.fromJSON(response);
                             doc.setBitmap(bitmap);
 
@@ -401,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         }
     }
 
-    private void sendImage(Bitmap bitmap) {
+    private void sendImage(Bitmap bitmap, String id) {
         final String ENDPOINT_IMAGE = "http://2702645a.ngrok.io/textrec/image";
         final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
 
@@ -432,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         RequestBody req = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("id", "d09ncu091bc3")
+                .addFormDataPart("id", id)
                 .addFormDataPart("file", filename, RequestBody.create(MEDIA_TYPE_PNG, file)).build();
         Request request = new Request.Builder()
                 .url(url)
@@ -451,7 +454,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         Log.d("[sendImage]", "Response: " + responseStr);
     }
 
-    private JSONObject sendText(String text) {
+    private JSONObject sendText(String text, String id) {
+        System.out.println("sending text: " + text);
+
         final String ENDPOINT_TEXT = "http://2702645a.ngrok.io/textrec/text";
         final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -464,7 +469,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         RequestBody body = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("id", "d09ncu091bc3")
+                .addFormDataPart("id", id)
                 .addFormDataPart("text", text).build();
         Request request = new Request.Builder()
                 .url(url)
@@ -505,18 +510,15 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         });
     }
 
-    public void resetPaymentView(final boolean switchToMain) {
+    public void resetConfirmationView() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                /*mViewPager.setOnTouchListener(null);
+                mViewPager.setCurrentItem(0);
 
-                if (switchToMain)
-                    mViewPager.setCurrentItem(1);
+                //View v = mCollectionPagerAdapter.getItem(1).getView();
 
-                View v = mCollectionPagerAdapter.getItem(2).getView();
-
-                EditText nameEdit = (EditText) v.findViewById(R.id.type);
+                /*EditText nameEdit = (EditText) v.findViewById(R.id.type);
                 ImageView purchasableView = (ImageView) v.findViewById(R.id.img);
                 ImageView recipientImage = (ImageView) v.findViewById(R.id.profileImage);
 
