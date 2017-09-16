@@ -155,17 +155,6 @@
         android:layout_below="@+id/img"
         android:layout_alignStart="@+id/img" />
 
-    <TextView
-        android:text="ADDITIONAL INFO"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/transparentWhite"
-        android:id="@+id/header_context"
-        android:textStyle="bold"
-        android:layout_marginTop="8dp"
-        android:layout_alignTop="@id/divider"
-        android:layout_alignStart="@+id/divider" />
-
     <EditText
         android:editable="false"
         android:layout_width="wrap_content"
@@ -181,19 +170,81 @@
         android:layout_below="@+id/header_type"
         android:layout_alignStart="@+id/header_type" />
 
+    <TextView
+        android:text="SOCIAL SECURITY NUMBER"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/transparentWhite"
+        android:id="@+id/header_context1"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:layout_alignTop="@id/divider"
+        android:layout_alignStart="@+id/divider" />
+
     <EditText
         android:editable="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/context"
+        android:id="@+id/context1"
         android:text="078-05-1120"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="0dp"
         android:textSize="18sp"
         android:textColorHint="@color/veryTransparentWhite"
         android:background="@android:color/transparent"
         android:textColor="@android:color/white"
         android:padding="0dp"
-        android:layout_below="@+id/header_context"
-        android:layout_alignStart="@+id/header_context" />
+        android:layout_below="@+id/header_context1"
+        android:layout_alignStart="@+id/header_context1" />
 
+    <TextView
+        android:text="SOCIAL SECURITY NUMBER"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/transparentWhite"
+        android:id="@+id/header_context2"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:layout_alignTop="@id/context1"
+        android:layout_alignStart="@+id/divider" />
+
+    <EditText
+        android:editable="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/context2"
+        android:text="078-05-1120"
+        android:layout_marginTop="0dp"
+        android:textSize="18sp"
+        android:textColorHint="@color/veryTransparentWhite"
+        android:background="@android:color/transparent"
+        android:textColor="@android:color/white"
+        android:padding="0dp"
+        android:layout_below="@+id/header_context2"
+        android:layout_alignStart="@+id/header_context2" />
+
+    <TextView
+        android:text="SOCIAL SECURITY NUMBER"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/transparentWhite"
+        android:id="@+id/header_context3"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:layout_alignTop="@id/context2"
+        android:layout_alignStart="@+id/divider" />
+
+    <EditText
+        android:editable="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/context3"
+        android:text="078-05-1120"
+        android:layout_marginTop="0dp"
+        android:textSize="18sp"
+        android:textColorHint="@color/veryTransparentWhite"
+        android:background="@android:color/transparent"
+        android:textColor="@android:color/white"
+        android:padding="0dp"
+        android:layout_below="@+id/header_context2"
+        android:layout_alignStart="@+id/header_context2" />
 </RelativeLayout>

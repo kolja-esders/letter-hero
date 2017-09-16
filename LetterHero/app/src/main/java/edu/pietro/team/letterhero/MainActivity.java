@@ -355,7 +355,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             // add unique id to both send operations
                             String id = UUID.randomUUID().toString();
 
-                            sendImage(bitmap, id);
+                            //sendImage(bitmap, id);
                             JSONObject response = sendText(detectedTextBuilder.toString(), id);
 
                             System.out.println("json received: " + response.toString());
@@ -366,7 +366,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                                     doc,
                                     ProcessingState.OBJECT_LOCK
                             ));
-
 
                         } catch (Exception x) {
                             EventBus.getDefault().post(new OnErrorDuringDetectionPostProcessing("No internet connection"));
@@ -390,10 +389,16 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         Bitmap bitmapImage = d.getBitmap();
 
         EditText companyEdit = (EditText) v.findViewById(R.id.company);
+        TextView category = (TextView) v.findViewById(R.id.category);
         EditText dateEdit = (EditText) v.findViewById(R.id.date);
         EditText typeEdit = (EditText) v.findViewById(R.id.type);
         EditText contextEdit = (EditText) v.findViewById(R.id.context);
         ImageView imageView = (ImageView) v.findViewById(R.id.img);
+
+        if (!d.getCategory().isEmpty()) {
+            category.setText(d.getCategory());
+            category.setVisibility(View.VISIBLE);
+        }
 
         //companyEdit.setText(d.getSender());
         companyEdit.setText("Zurich Insurance");
@@ -517,13 +522,16 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             public void run() {
                 mViewPager.setCurrentItem(0);
 
-                //View v = mCollectionPagerAdapter.getItem(1).getView();
+                View v = mCollectionPagerAdapter.getItem(1).getView();
 
-                /*EditText nameEdit = (EditText) v.findViewById(R.id.type);
-                ImageView purchasableView = (ImageView) v.findViewById(R.id.img);
+                EditText dateCreation = (EditText) v.findViewById(R.id.date);
+                TextView category = (TextView) v.findViewById(R.id.category);
                 ImageView recipientImage = (ImageView) v.findViewById(R.id.profileImage);
 
-                recipientImage.setImageDrawable(getResources().getDrawable(R.drawable.default_user));
+                dateCreation.setText("");
+                category.setVisibility(View.INVISIBLE);
+
+                /*recipientImage.setImageDrawable(getResources().getDrawable(R.drawable.default_user));
 
                 ibanEdit.setEnabled(true);
                 nameEdit.setEnabled(true);
