@@ -11,6 +11,7 @@ import android.graphics.Point;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
@@ -57,6 +58,7 @@ import edu.pietro.team.letterhero.event.OnDocumentProcessed;
 import edu.pietro.team.letterhero.event.OnErrorDuringDetectionPostProcessing;
 import edu.pietro.team.letterhero.event.OnImageCaptureRequested;
 import edu.pietro.team.letterhero.event.OnStartDetectionPostProcessing;
+import edu.pietro.team.letterhero.event.OnStopMessage;
 import edu.pietro.team.letterhero.helper.DownloadImageTask;
 import edu.pietro.team.letterhero.helper.ProcessingState;
 import edu.pietro.team.letterhero.helper.Utils;
@@ -403,52 +405,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         }
     }
 
-    private void populatePaymentInitView(View v, MoneyTransfer mt) {
-        boolean isPurchase = mt.getItem() != null;
-
-        User recipient = mt.getRecipient();
-        String recipientName = recipient.getName();
-        String recipientIban = recipient.getIban();
-        int recipientImageResourceId = recipient.getImageResourceId();
-        String formattedAmount = mt.getAmount().getFormattedAmount();
-
-        EditText nameEdit = (EditText) v.findViewById(R.id.type);
-        EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
-        EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
-        TextView titleView = (TextView) v.findViewById(R.id.paymentTitleContent);
-        EditText message = (EditText) v.findViewById(R.id.purchaseMessage);
-        ImageView purchasableView = (ImageView) v.findViewById(R.id.img);
-        ImageView recipientImage = (ImageView) v.findViewById(R.id.profileImage);
-
-        if (isPurchase) {
-            String productImageUrl = mt.getItem().getImageUrl();
-            String productName = mt.getItem().getName();
-            purchasableView.setVisibility(View.INVISIBLE);
-            new DownloadImageTask(purchasableView).execute(productImageUrl);
-            titleView.setText(productName);
-            message.setHint("Share your purchase");
-            // TODO: Disable editing of name and iban
-        } else {
-            titleView.setText("Money transfer");
-            purchasableView.setImageDrawable(getResources().getDrawable(R.drawable.ic_dollar_bill));
-            message.setHint("Enter reference line");
-        }
-
-        if (recipientImageResourceId != -1) {
-            recipientImage.setImageDrawable(getResources().getDrawable(recipientImageResourceId));
-        } else {
-            recipientImage.setImageDrawable(getResources().getDrawable(R.drawable.default_user));
-        }
-
-        nameEdit.setText(recipientName);
-        ibanEdit.setText(Utils.formatIBAN(recipientIban));
-        amountEdit.setText(formattedAmount);
-
-        amountEdit.setEnabled(!isPurchase);
-        nameEdit.setEnabled(!isPurchase);
-        ibanEdit.setEnabled(!isPurchase);
-    }
-
     private void sendImage(Bitmap bitmap) {
         final String ENDPOINT_IMAGE = "http://2702645a.ngrok.io/textrec/image";
         final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
@@ -557,7 +513,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mViewPager.setOnTouchListener(null);
+                /*mViewPager.setOnTouchListener(null);
 
                 if (switchToMain)
                     mViewPager.setCurrentItem(1);
@@ -565,10 +521,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 View v = mCollectionPagerAdapter.getItem(2).getView();
 
                 EditText nameEdit = (EditText) v.findViewById(R.id.type);
-                EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
-                EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
-                TextView titleView = (TextView) v.findViewById(R.id.paymentTitleContent);
-                EditText message = (EditText) v.findViewById(R.id.purchaseMessage);
                 ImageView purchasableView = (ImageView) v.findViewById(R.id.img);
                 ImageView recipientImage = (ImageView) v.findViewById(R.id.profileImage);
 
@@ -592,7 +544,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 payBtn.setText("SEND NOW");
                 payBtn.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.right_24dp), null);
                 ((ProgressBar) v.findViewById(R.id.payProgress)).setVisibility(View.INVISIBLE);
-                ((ImageView) v.findViewById(R.id.paySuccess)).setVisibility(View.INVISIBLE);
+                ((ImageView) v.findViewById(R.id.paySuccess)).setVisibility(View.INVISIBLE);*/
             }
         });
     }

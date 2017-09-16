@@ -8,7 +8,7 @@ import android.support.v13.app.FragmentPagerAdapter;
 public class CollectionPagerAdapter extends FragmentPagerAdapter {
 
     ScanOverlayFragment scf = ScanOverlayFragment.newInstance();
-    PaymentInitFragment pif = PaymentInitFragment.newInstance();
+    DocumentConfirmationFragment pif = DocumentConfirmationFragment.newInstance();
 
     public CollectionPagerAdapter(FragmentManager fm) {
         super(fm);
