@@ -357,6 +357,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
                             //sendImage(bitmap, id);
                             JSONObject response = sendText(detectedTextBuilder.toString(), id);
+                            //JSONObject response = sendText(OcrDetectionProcessor.lastOcr, id);
 
                             System.out.println("json received: " + response.toString());
                             Document doc = Document.fromJSON(response);
@@ -430,10 +431,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         FileOutputStream outputStream;
         File file = null;
         try {
-            file = File.createTempFile(filename, null, getCacheDir());
+            //file = File.createTempFile(filename, null, getCacheDir());
+            file = File.createTempFile(filename, null, getExternalCacheDir());
             outputStream = new FileOutputStream(file);
             outputStream.write(byteArray);
             outputStream.close();
+            System.out.println("saved " + getExternalCacheDir() + " " + filename);
         } catch (Exception e) {
             e.printStackTrace();
         }
