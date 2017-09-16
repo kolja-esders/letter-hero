@@ -14,7 +14,7 @@
         android:layout_width="fill_parent"
         android:layout_marginTop="24dp"
         android:layout_height="144dp"
-        android:elevation="2dp"
+        android:elevation="4dp"
         app:srcCompat="@android:color/white"
         android:layout_toEndOf="@+id/context"
         android:id="@+id/white_bg"
@@ -38,7 +38,7 @@
         android:layout_alignParentBottom="true"
         android:id="@+id/navigation_background" />
 
-    <ImageView
+    <!--<ImageView
         android:textColorHint="@color/veryTransparentWhite"
         android:layout_width="64dp"
         android:layout_height="64dp"
@@ -51,32 +51,7 @@
         android:gravity="center_horizontal"
         android:layout_alignTop="@+id/img"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="174dp" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/type"
-        android:hint="Type"
-        android:textSize="18sp"
-        android:textColorHint="@color/veryTransparentWhite"
-        android:background="@android:color/transparent"
-        android:textColor="@android:color/white"
-        android:layout_marginLeft="16dp"
-        android:layout_alignTop="@+id/profileImage"
-        android:layout_toEndOf="@+id/profileImage"
-        android:padding="0dp" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/date"
-        android:textColorHint="@color/veryTransparentWhite"
-        android:textColor="@color/transparentWhite"
-        android:background="@android:color/transparent"
-        android:layout_below="@+id/type"
-        android:layout_alignStart="@+id/type"
-        android:textSize="14sp" />
+        android:layout_marginTop="174dp" />-->
 
     <Button
         android:layout_width="wrap_content"
@@ -85,7 +60,6 @@
         android:id="@+id/ok_button"
         android:paddingLeft="130dp"
         android:paddingRight="130dp"
-        android:elevation="21dp"
         android:maxLines="1"
         android:text="OK"
         android:layout_above="@+id/navigation_background"
@@ -93,30 +67,13 @@
         android:layout_alignParentEnd="true"
         android:textColor="@android:color/white" />
 
-    <EditText
-        android:layout_height="wrap_content"
-        android:id="@+id/context"
-        android:hint="Enter reference line"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_width="wrap_content"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:textSize="18dp"
-        android:inputType="textCapSentences|textShortMessage"
-        android:layout_above="@+id/ok_button"
-        android:layout_alignStart="@+id/date"
-        android:layout_marginBottom="11dp" />
-
     <ImageView
         android:layout_width="90dp"
         android:layout_height="160dp"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:id="@+id/img"
-        android:elevation="6dp"
+        android:elevation="8dp"
         android:scaleType="fitCenter"
         android:background="@android:color/holo_red_dark"
         android:layout_below="@+id/status_bar_background"
@@ -137,5 +94,106 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:textColor="@android:color/black" />
+
+    <EditText
+        android:editable="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/date"
+        android:text="11/22/2017"
+        android:layout_alignParentEnd="true"
+        android:elevation="4dp"
+        android:layout_marginEnd="16dp"
+        android:textColorHint="@color/veryTransparentWhite"
+        android:textColor="@color/transparentBlack"
+        android:background="@android:color/transparent"
+        android:textSize="14sp"
+        android:layout_below="@+id/company"
+        android:layout_alignStart="@+id/company" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_height="1dp"
+        app:srcCompat="@color/veryTransparentWhite"
+        android:layout_below="@+id/type"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:id="@+id/divider" />
+
+    <TextView
+        android:text="insurance"
+        android:background="@drawable/tag_background"
+        android:drawableLeft="@drawable/full_label_white"
+        android:drawablePadding="4dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:id="@+id/category"
+        android:elevation="4dp"
+        android:textColor="@android:color/white"
+        android:layout_alignBottom="@+id/img"
+        android:layout_alignStart="@+id/date"
+        android:layout_marginBottom="18dp"/>
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:id="@+id/header_type"
+        android:layout_marginTop="32dp"
+        android:text="DOCUMENT TYPE"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:textColor="@color/transparentWhite"
+        android:layout_below="@+id/img"
+        android:layout_alignStart="@+id/img" />
+
+    <TextView
+        android:text="ADDITIONAL INFO"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/transparentWhite"
+        android:id="@+id/header_context"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"
+        android:layout_alignTop="@id/divider"
+        android:layout_alignStart="@+id/divider" />
+
+    <EditText
+        android:editable="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/type"
+        android:text="Contract formation"
+        android:layout_marginTop="8dp"
+        android:textSize="18sp"
+        android:textColorHint="@color/veryTransparentWhite"
+        android:background="@android:color/transparent"
+        android:textColor="@android:color/white"
+        android:padding="0dp"
+        android:layout_below="@+id/header_type"
+        android:layout_alignStart="@+id/header_type" />
+
+    <EditText
+        android:editable="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/context"
+        android:text="078-05-1120"
+        android:layout_marginTop="8dp"
+        android:textSize="18sp"
+        android:textColorHint="@color/veryTransparentWhite"
+        android:background="@android:color/transparent"
+        android:textColor="@android:color/white"
+        android:padding="0dp"
+        android:layout_below="@+id/header_context"
+        android:layout_alignStart="@+id/header_context" />
 
 </RelativeLayout>

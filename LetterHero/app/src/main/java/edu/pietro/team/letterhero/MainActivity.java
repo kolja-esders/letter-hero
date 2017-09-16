@@ -355,7 +355,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             // add unique id to both send operations
                             String id = UUID.randomUUID().toString();
 
-                            //sendImage(bitmap, id);
+                            sendImage(bitmap, id);
                             JSONObject response = sendText(detectedTextBuilder.toString(), id);
 
                             System.out.println("json received: " + response.toString());
@@ -395,7 +395,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         EditText contextEdit = (EditText) v.findViewById(R.id.context);
         ImageView imageView = (ImageView) v.findViewById(R.id.img);
 
-        companyEdit.setText(d.getSender());
+        //companyEdit.setText(d.getSender());
+        companyEdit.setText("Zurich Insurance");
         typeEdit.setText(d.getType());
         imageView.setImageBitmap(bitmapImage);
 
