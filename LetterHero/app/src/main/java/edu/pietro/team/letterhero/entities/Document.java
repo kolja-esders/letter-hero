@@ -15,6 +15,8 @@ public class Document {
 
     private String mType;
 
+    private String mCategory;
+
     private String mSender;
 
     private String mDateOfLetter;
@@ -35,6 +37,14 @@ public class Document {
 
     public void setType(String type) {
         this.mType = type;
+    }
+
+    public String getCategory() {
+        return mCategory;
+    }
+
+    public void setCategory(String category) {
+        this.mCategory = category;
     }
 
     public String getSender() {
@@ -65,8 +75,8 @@ public class Document {
         Document document = new Document();
         try {
             document.setType(json.getString("type"));
-            document.setSender(json.getString("sender"));
-            document.setDateOfLetter(json.getString("dateOfLetter"));
+            document.setCategory(json.getString("category"));
+            document.setSender(json.getString("company"));
             JSONObject jsonContext = json.getJSONObject("context");
             Iterator<?> contextKeys = jsonContext.keys();
             Map<String, String> context = new HashMap<>();
