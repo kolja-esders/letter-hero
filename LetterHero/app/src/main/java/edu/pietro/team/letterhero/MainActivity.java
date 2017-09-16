@@ -479,8 +479,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         long timeNow = System.currentTimeMillis();
         String filename = timeNow + ".png";
         FileOutputStream outputStream;
+        File file = null;
         try {
-            File file = File.createTempFile(filename, null, getCacheDir());
+            file = File.createTempFile(filename, null, getCacheDir());
             outputStream = new FileOutputStream(file);
             outputStream.write(byteArray);
             outputStream.close();
