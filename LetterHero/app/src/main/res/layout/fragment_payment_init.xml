@@ -94,26 +94,6 @@
         android:layout_marginTop="174dp" />
 
     <EditText
-        android:hint="0,00 €"
-        android:textColorHint="@color/veryTransparentWhite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/amountEdit"
-        android:textSize="24dp"
-        android:background="@drawable/amount_bg"
-        android:elevation="8dp"
-        android:maxLines="1"
-        android:textColor="@android:color/white"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:gravity="center_horizontal"
-        android:layout_alignTop="@+id/img"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="174dp" />
-
-    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/type"
@@ -126,6 +106,14 @@
         android:layout_alignTop="@+id/profileImage"
         android:layout_toEndOf="@+id/profileImage"
         android:padding="0dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="Name"
+        android:ems="10"
+        android:id="@+id/company" />
 
     <EditText
         android:layout_width="wrap_content"
