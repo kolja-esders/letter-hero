@@ -170,6 +170,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         mViewPager.setAdapter(mCollectionPagerAdapter);
         mViewPager.setOffscreenPageLimit(2);
         mViewPager.setCurrentItem(0);
+        mViewPager.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                return true;
+            }
+        });
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
 
         // Check for the camera permission before accessing the camera.  If the

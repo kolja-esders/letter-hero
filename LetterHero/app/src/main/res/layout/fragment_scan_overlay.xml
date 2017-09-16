@@ -7,13 +7,13 @@
     android:animateLayoutChanges="true">
 
     <ImageView
+        android:id="@+id/payhero_logo"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        app:srcCompat="@mipmap/ic_pay_hero_logo"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="26dp"
-        android:id="@+id/payhero_logo" />
+        app:srcCompat="@drawable/ic_eye_24dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -31,24 +31,15 @@
         android:visibility="invisible" />
 
     <ImageView
+        android:id="@+id/payment_icon"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        app:srcCompat="@drawable/payment_white_trans_128dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_marginBottom="60dp"
         android:layout_marginRight="16dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/payment_icon" />
-
-    <ImageView
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        app:srcCompat="@drawable/list_white_trans_128dp"
-        android:layout_marginBottom="60dp"
-        android:layout_marginLeft="16dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/list_icon" />
+        android:visibility="invisible"
+        app:srcCompat="@drawable/payment_white_trans_128dp" />
 
     <ImageView
         app:srcCompat="@drawable/circle_green"
