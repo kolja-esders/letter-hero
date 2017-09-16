@@ -18,6 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,7 +33,10 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.MultiDetector;
+import com.google.android.gms.vision.text.Line;
+import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import org.greenrobot.eventbus.EventBus;
@@ -44,6 +48,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import edu.pietro.team.letterhero.entities.AmountOfMoney;
 import edu.pietro.team.letterhero.event.FeedFilterClicked;
@@ -86,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     private CameraSourcePreview mPreview;
 
     private CollectionPagerAdapter mCollectionPagerAdapter;
+
+    private TextRecognizer mTextRecognizer;
 
     private ViewPager mViewPager;
 
@@ -200,13 +207,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         // dummy detector saving the last frame in order to send it to Microsoft in case of face detection
         ImageFetchingDetector imageFetchingDetector = new ImageFetchingDetector();
 
-        TextRecognizer textRecognizer = new TextRecognizer.Builder(ctx).build();
-        textRecognizer.setProcessor(new OcrDetectionProcessor());
+        mTextRecognizer = new TextRecognizer.Builder(ctx).build();
+        mTextRecognizer.setProcessor(new OcrDetectionProcessor());
         // TODO: Check if the TextRecognizer is operational.
 
         MultiDetector multiDetector = new MultiDetector.Builder()
                 .add(imageFetchingDetector)
-                .add(textRecognizer)
+                .add(mTextRecognizer)
                 .build();
 
         mCameraSource = new CameraSource.Builder(ctx, multiDetector)
@@ -333,93 +340,71 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     @Subscribe
     public void onMessageEvent(OnImageCaptureRequested e) {
+        final String ENDPOINT_TEXT = "http://2702645a.ngrok.io/textrec/text";
+        final String ENDPOINT_IMAGE = "http://2702645a.ngrok.io/textrec/image";
         Log.d("EVENT_BUS", "Image capture requested.");
 
-//        TextView et = (TextView) mCollectionPagerAdapter.getItem(2).getView().findViewById(R.id.nameEdit);
-//        et.setText("Test");
-//        mViewPager.setCurrentItem(2);
-
-        if (!onTryStartProcessing(ProcessingState.OBJECT_LOCK)){
-            return;
-        }
+        //if (!onTryStartProcessing(ProcessingState.OBJECT_LOCK)){
+        //    return;
+        //}
 
         mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onPictureTaken(final byte[] bytes) {
-                // @David: Da ist das IMG :)
+                EventBus.getDefault().post(new OnStartDetectionPostProcessing("Processing document..."));
 
-                EventBus.getDefault().post(new OnStartDetectionPostProcessing("Searching for product..."));
-
-
+                // Need to send data not on rendering thread.
                 Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            
-                            String url = "http://2702645a.ngrok.io/obrec/";
-                            //String url = "http://d00d8906.ngrok.io/obrec/";
-                            URL obj = new URL(url);
-
-
+                            URL imageUrl = new URL(ENDPOINT_IMAGE);
+                            URL textUrl = new URL(ENDPOINT_TEXT);
                             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            Log.d("Image resolution", bitmap.getWidth() + " x " + bitmap.getHeight());
 
-                            Log.d("BS", bitmap.getWidth() + " x " + bitmap.getHeight());
+                            Frame frame = new Frame.Builder().setBitmap(bitmap).build();
 
-                            int newHeight = (int) (bitmap.getHeight() * 0.6);
-
-                            int hOffset = (bitmap.getHeight() - newHeight) / 2;
-
-                            bitmap = Bitmap.createBitmap(bitmap, 0, hOffset, bitmap.getWidth(), bitmap.getHeight() - hOffset);
-                            bitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, false);
-
-                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                            byte[] byteArray = stream.toByteArray();
-
-
-                            long timeNow = System.currentTimeMillis();
-
-                            String filename = timeNow + ".png";
-                            FileOutputStream outputStream;
-
-                            File file = File.createTempFile(filename, null, getCacheDir());
-
-
-                            try {
-                                outputStream = new FileOutputStream(file);
-                                outputStream.write(byteArray);
-                                outputStream.close();
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                            StringBuilder detectedTextBuilder = new StringBuilder(); ;
+                            SparseArray<TextBlock> detectedTextRaw = mTextRecognizer.detect(frame);
+                            for (int i = 0; i < detectedTextRaw.size(); ++i) {
+                                TextBlock item = detectedTextRaw.valueAt(i);
+                                List components = item.getComponents();
+                                for (int j = 0; j < components.size(); ++j) {
+                                    if (components.get(j) instanceof Line) {
+                                        Line l = (Line) components.get(j);
+                                        detectedTextBuilder.append(l.getValue());
+                                        detectedTextBuilder.append(" ");
+                                    }
+                                }
                             }
+                            String detectedText = detectedTextBuilder.toString();
 
-                            final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
 
-                            RequestBody req = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("userid", "8457851245")
-                                    .addFormDataPart("file", filename, RequestBody.create(MEDIA_TYPE_PNG, file)).build();
 
-                            Request request = new Request.Builder()
-                                    .url(url)
-                                    .post(req)
-                                    .build();
+                            Log.d("Main", detectedText);
 
-                            OkHttpClient client = new OkHttpClient();
-                            Response response = client.newCall(request).execute();
+                            //int newHeight = (int) (bitmap.getHeight() * 0.6);
+                            //int hOffset = (bitmap.getHeight() - newHeight) / 2;
+                            //bitmap = Bitmap.createBitmap(bitmap, 0, hOffset, bitmap.getWidth(), bitmap.getHeight() - hOffset);
+                            //bitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, false);
 
-                            String prdResp = response.body().string();
+                            // Compress image
 
-                            Log.d("response", "uploadImage:" + prdResp);
 
-                            final JSONObject jsonProd = new JSONObject(prdResp);
-
-                            Item foundProduct = new Item(jsonProd.getString("name"), jsonProd.getString("brand"), jsonProd.getString("display_img_path"), new AmountOfMoney(jsonProd.getDouble("price")));
-
+                            //final JSONObject jsonProd = new JSONObject(prdResp);
+                            /*Item foundProduct = new Item(jsonProd.getString("name"), jsonProd.getString("brand"), jsonProd.getString("display_img_path"), new AmountOfMoney(jsonProd.getDouble("price")));
                             User seller = User.ZALANDO;
                             EventBus.getDefault().post(new OnPaymentInit(
                                     new MoneyTransfer(seller, foundProduct, foundProduct.getRetailPrice()),
                                     ProcessingState.OBJECT_LOCK
-                            ));
+                            ));*/
+
+                            /*EventBus.getDefault().post(new OnDocumentDetection(
+                                    new MoneyTransfer(seller, foundProduct, foundProduct.getRetailPrice()),
+                                    ProcessingState.OBJECT_LOCK
+                            ));*/
 
 
                         } catch (Exception x) {
@@ -484,6 +469,47 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         amountEdit.setEnabled(!isPurchase);
         nameEdit.setEnabled(!isPurchase);
         ibanEdit.setEnabled(!isPurchase);
+    }
+
+    private void sendImage(Bitmap bitmap, URL endpoint) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+
+        long timeNow = System.currentTimeMillis();
+        String filename = timeNow + ".png";
+        FileOutputStream outputStream;
+        try {
+            File file = File.createTempFile(filename, null, getCacheDir());
+            outputStream = new FileOutputStream(file);
+            outputStream.write(byteArray);
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
+        RequestBody req = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("userid", "8457851245")
+                .addFormDataPart("file", filename, RequestBody.create(MEDIA_TYPE_PNG, file)).build();
+        Request request = new Request.Builder()
+                .url(endpoint)
+                .post(req)
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        String responseStr = "";
+        try {
+            Response response = client.newCall(request).execute();
+            responseStr = response.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("Response:", responseStr);
+    }
+
+    private void sendText() {
+
     }
 
     public void disableScrolling() {

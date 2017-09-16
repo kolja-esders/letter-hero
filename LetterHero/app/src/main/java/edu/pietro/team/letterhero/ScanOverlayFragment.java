@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,29 +41,27 @@ public class ScanOverlayFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_scan_overlay, container, false);
+
+        View v = inflater.inflate(R.layout.fragment_scan_overlay, container, false);
+        mDefaultEventBus = EventBus.getDefault();
+
+        ImageView takeSnap = (ImageView) v.findViewById(R.id.snap);
+        takeSnap.setOnClickListener(new ImageView.OnClickListener() {
+            public void onClick(View v) {
+                mDefaultEventBus.post(new OnImageCaptureRequested());
+                Log.d("ScanOverlay", "Hello there");
+            }
+        });
+
+        return v;
     }
 
     public static ScanOverlayFragment newInstance() {
         Bundle args = new Bundle();
         ScanOverlayFragment fragment = new ScanOverlayFragment();
         fragment.setArguments(args);
+
         return fragment;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        mDefaultEventBus = EventBus.getDefault();
-
-        View scanOverlay = getActivity().findViewById(R.id.scan_overlay);
-        scanOverlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mDefaultEventBus.post(new OnImageCaptureRequested());
-            }
-        });
     }
 
     @Override
@@ -70,9 +69,6 @@ public class ScanOverlayFragment extends Fragment {
         super.onAttach(activity);
         if (activity instanceof OnScanOverlayFragmentInteractionListener) {
             mListener = (OnScanOverlayFragmentInteractionListener) activity;
-        } else {
-            /*throw new RuntimeException(activity.toString()
-                    + " must implement OnScanOverlayFragmentInteractionListener");*/
         }
         EventBus.getDefault().register(this);
     }
@@ -82,9 +78,6 @@ public class ScanOverlayFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OnScanOverlayFragmentInteractionListener) {
             mListener = (OnScanOverlayFragmentInteractionListener) context;
-        } else {
-            /*throw new RuntimeException(context.toString()
-                    + " must implement OnScanOverlayFragmentInteractionListener");*/
         }
     }
 

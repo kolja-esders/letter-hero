@@ -49,4 +49,13 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:id="@+id/list_icon" />
+
+    <ImageView
+        app:srcCompat="@drawable/circle_green"
+        android:layout_above="@+id/payment_icon"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/snap"
+        android:clickable="true"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
 </RelativeLayout>
