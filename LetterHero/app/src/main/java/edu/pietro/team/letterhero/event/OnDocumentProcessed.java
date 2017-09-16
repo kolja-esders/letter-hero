@@ -15,7 +15,7 @@ public class OnDocumentProcessed {
         mDocument = document;
         mAssumedProcessingState = assumedPS;
 
-        //MainActivity.getCurrentActivity().setCurrentTransfer(mPurchase);
+        MainActivity.getCurrentActivity().setCurrentDoc(document);
     }
 
     public Document getDocument() {
