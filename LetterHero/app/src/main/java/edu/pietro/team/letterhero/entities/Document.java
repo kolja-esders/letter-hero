@@ -23,6 +23,8 @@ public class Document {
 
     private Map<String, String> mContext;
 
+    private Map<String, String> mNumbers;
+
     public Bitmap getBitmap() {
         return mBitmap;
     }
@@ -71,6 +73,14 @@ public class Document {
         this.mContext = context;
     }
 
+    public Map<String, String> getNumbers() {
+        return mNumbers;
+    }
+
+    public void setNumbers(Map<String, String> numbers) {
+        this.mNumbers = numbers;
+    }
+
     public static Document fromJSON(JSONObject json) {
         Document document = new Document();
         try {
@@ -78,9 +88,11 @@ public class Document {
             document.setCategory(json.getString("category"));
             document.setSender(json.getString("company"));
             JSONObject jsonContext = json.getJSONObject("context");
+            JSONObject jsonNumbers = json.getJSONObject("numbers");
             Iterator<?> contextKeys = jsonContext.keys();
+            Iterator<?> numbersKeys = jsonNumbers.keys();
             Map<String, String> context = new HashMap<>();
-
+            Map<String, String> numbers = new HashMap<>();
             while (contextKeys.hasNext()) {
                 String key = (String) contextKeys.next();
                 Object value = jsonContext.get(key);
@@ -88,7 +100,15 @@ public class Document {
                     context.put(key, (String) value);
                 }
             }
+            while (numbersKeys.hasNext()) {
+                String key = (String) numbersKeys.next();
+                Object value = jsonNumbers.get(key);
+                if (value instanceof String) {
+                    numbers.put(key, (String) value);
+                }
+            }
             document.setContext(context);
+            document.setNumbers(numbers);
         } catch (JSONException e) {
             e.printStackTrace();
         }
