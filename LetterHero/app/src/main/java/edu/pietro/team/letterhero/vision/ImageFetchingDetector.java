@@ -18,7 +18,7 @@ import java.nio.ByteBuffer;
 import edu.pietro.team.letterhero.MainActivity;
 import edu.pietro.team.letterhero.entities.AmountOfMoney;
 import edu.pietro.team.letterhero.event.OnErrorDuringDetectionPostProcessing;
-import edu.pietro.team.letterhero.event.OnPaymentInit;
+import edu.pietro.team.letterhero.event.OnDocumentProcessed;
 import edu.pietro.team.letterhero.helper.AddressBook;
 import edu.pietro.team.letterhero.helper.PostHelper;
 import edu.pietro.team.letterhero.helper.ProcessingState;
@@ -170,7 +170,7 @@ public class ImageFetchingDetector extends Detector {
                                 Log.e("FACE", "no corresponding user found for face");
                                 EventBus.getDefault().post(new OnErrorDuringDetectionPostProcessing("Face not recognized"));
                             } else {
-                                EventBus.getDefault().post(new OnPaymentInit(
+                                EventBus.getDefault().post(new OnDocumentProcessed(
                                         new MoneyTransfer(c, null, new AmountOfMoney(5.0)),
                                         ProcessingState.FACE_LOCK
                                 ));

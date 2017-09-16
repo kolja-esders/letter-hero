@@ -2,24 +2,24 @@ package edu.pietro.team.letterhero.event;
 
 
 import edu.pietro.team.letterhero.MainActivity;
+import edu.pietro.team.letterhero.entities.Document;
 import edu.pietro.team.letterhero.helper.ProcessingState;
 import edu.pietro.team.letterhero.social.MoneyTransfer;
 
-public class OnPaymentInit {
+public class OnDocumentProcessed {
 
-    private final MoneyTransfer mPurchase;
+    private final Document mDocument;
     private final ProcessingState mAssumedProcessingState;
 
-    public OnPaymentInit(MoneyTransfer purchase, ProcessingState assumedPS) {
-        mPurchase = purchase;
+    public OnDocumentProcessed(Document document, ProcessingState assumedPS) {
+        mDocument = document;
         mAssumedProcessingState = assumedPS;
 
-        MainActivity.getCurrentActivity().setCurrentTransfer(mPurchase);
-
+        //MainActivity.getCurrentActivity().setCurrentTransfer(mPurchase);
     }
 
-    public MoneyTransfer getPurchase() {
-        return mPurchase;
+    public Document getDocument() {
+        return mDocument;
     }
     public ProcessingState getAssumedProcessingState() { return mAssumedProcessingState; }
 
