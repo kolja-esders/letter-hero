@@ -57,8 +57,8 @@ public class OcrDetectionProcessor implements Detector.Processor<TextBlock> {
             Item moneyTransferItem = new Item("Money transfer", "", "", null);
             AmountOfMoney aom = amount.equals("") ? new AmountOfMoney(0.0)
                     : new AmountOfMoney(Double.valueOf(amount));
-            EventBus.getDefault().post(new OnDocumentProcessed(
-                    new MoneyTransfer(recipient, moneyTransferItem, aom), ProcessingState.NOLOCK));
+            /*EventBus.getDefault().post(new OnDocumentProcessed(
+                    new MoneyTransfer(recipient, moneyTransferItem, aom), ProcessingState.NOLOCK));*/
         }
     }
 
