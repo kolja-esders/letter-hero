@@ -41,15 +41,6 @@
             android:name="edu.pietro.team.letterhero.services.OcrResolveService"
             android:exported="false" />
 
-        <activity
-            android:name="edu.pietro.team.letterhero.ValidationActivity"
-            android:label="@string/title_activity_validation"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
-            android:name="edu.pietro.team.letterhero.PaymentSuccessActivity"
-            android:label="@string/title_activity_success" />
-
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode,face, ocr" />
