@@ -3,7 +3,6 @@ package edu.pietro.team.letterhero;
 import android.Manifest;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -11,7 +10,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
@@ -50,19 +48,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-import edu.pietro.team.letterhero.entities.AmountOfMoney;
 import edu.pietro.team.letterhero.entities.Document;
 import edu.pietro.team.letterhero.event.FeedFilterClicked;
 import edu.pietro.team.letterhero.event.OnDocumentProcessed;
 import edu.pietro.team.letterhero.event.OnErrorDuringDetectionPostProcessing;
 import edu.pietro.team.letterhero.event.OnImageCaptureRequested;
-import edu.pietro.team.letterhero.event.OnDocumentProcessed;
 import edu.pietro.team.letterhero.event.OnStartDetectionPostProcessing;
-import edu.pietro.team.letterhero.event.OnStopMessage;
 import edu.pietro.team.letterhero.helper.DownloadImageTask;
 import edu.pietro.team.letterhero.helper.ProcessingState;
 import edu.pietro.team.letterhero.helper.Utils;
-import edu.pietro.team.letterhero.social.Item;
 import edu.pietro.team.letterhero.social.MoneyTransfer;
 import edu.pietro.team.letterhero.social.User;
 import edu.pietro.team.letterhero.vision.CameraSourcePreview;
@@ -103,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     private static MainActivity currentActivity = null;
 
-    private MoneyTransfer currentTransfer = null;
+    private Document currentDocument = null;
 
     public static MainActivity getCurrentActivity() {
         return currentActivity;
@@ -375,7 +369,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     private void populatePaymentInitView(View v, MoneyTransfer mt) {
         boolean isPurchase = mt.getItem() != null;
 
-        this.currentTransfer = mt;
+        //this.currentDocument = mt;
 
         User recipient = mt.getRecipient();
         String recipientName = recipient.getName();
@@ -383,12 +377,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         int recipientImageResourceId = recipient.getImageResourceId();
         String formattedAmount = mt.getAmount().getFormattedAmount();
 
-        EditText nameEdit = (EditText) v.findViewById(R.id.nameEdit);
+        EditText nameEdit = (EditText) v.findViewById(R.id.type);
         EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
         EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
         TextView titleView = (TextView) v.findViewById(R.id.paymentTitleContent);
         EditText message = (EditText) v.findViewById(R.id.purchaseMessage);
-        ImageView purchasableView = (ImageView) v.findViewById(R.id.imagePurchasable);
+        ImageView purchasableView = (ImageView) v.findViewById(R.id.img);
         ImageView recipientImage = (ImageView) v.findViewById(R.id.profileImage);
 
         if (isPurchase) {
@@ -535,12 +529,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
                 View v = mCollectionPagerAdapter.getItem(2).getView();
 
-                EditText nameEdit = (EditText) v.findViewById(R.id.nameEdit);
+                EditText nameEdit = (EditText) v.findViewById(R.id.type);
                 EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
                 EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
                 TextView titleView = (TextView) v.findViewById(R.id.paymentTitleContent);
                 EditText message = (EditText) v.findViewById(R.id.purchaseMessage);
-                ImageView purchasableView = (ImageView) v.findViewById(R.id.imagePurchasable);
+                ImageView purchasableView = (ImageView) v.findViewById(R.id.img);
                 ImageView recipientImage = (ImageView) v.findViewById(R.id.profileImage);
 
                 recipientImage.setImageDrawable(getResources().getDrawable(R.drawable.default_user));
@@ -568,12 +562,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         });
     }
 
-    public MoneyTransfer getCurrentTransfer(){
-        return this.currentTransfer;
+    public Document getCurrentDocument(){
+        return this.currentDocument;
     }
 
-    public void setCurrentTransfer(MoneyTransfer trans){
-        this.currentTransfer = trans;
+    public void setCurrentDocument(Document document){
+        this.currentDocument = document;
     }
 
     public boolean onTryStartProcessing(ProcessingState ps) {

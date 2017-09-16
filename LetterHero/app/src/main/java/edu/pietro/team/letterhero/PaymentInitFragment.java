@@ -23,6 +23,7 @@ import android.widget.TextView;
 import org.apache.commons.validator.routines.IBANValidator;
 
 import edu.pietro.team.letterhero.entities.AmountOfMoney;
+import edu.pietro.team.letterhero.entities.Document;
 import edu.pietro.team.letterhero.helper.PostHelper;
 import edu.pietro.team.letterhero.social.Item;
 import edu.pietro.team.letterhero.social.MoneyTransfer;
@@ -78,14 +79,14 @@ public class PaymentInitFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_payment_init, container, false);
-        final Button confirm = (Button) v.findViewById(R.id.payButton);
-        final ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.payProgress);
+        //final Button confirm = (Button) v.findViewById(R.id.ok_button);
+        final ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.imgProgress);
         progressBar.setVisibility(View.INVISIBLE);
         progressBar.getIndeterminateDrawable().setColorFilter(0xFFFFFFFF,
                 android.graphics.PorterDuff.Mode.MULTIPLY);
 
 
-        confirm.setOnClickListener(new View.OnClickListener() {
+        /*confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -143,14 +144,14 @@ public class PaymentInitFragment extends Fragment {
 
                 // Add Story (might not be right here !!!!)
                 String purchaseString = ((EditText)v.findViewById(R.id.purchaseMessage)).getText().toString();
-                MoneyTransfer curTrans = ((MainActivity) getActivity()).getCurrentTransfer();
+                Document curDocument = ((MainActivity) getActivity()).getCurrentDocument();
 
-                if(curTrans == null){
-                    curTrans = new MoneyTransfer(new User(name, iban), new Item("Transfer"), new AmountOfMoney(doubleAmount));
+                if(curDocument == null){
+                    curDocument = new MoneyTransfer(new User(name, iban), new Item("Transfer"), new AmountOfMoney(doubleAmount));
                 }
 
 
-                Stories.Story buyStory = new Stories.Story(curTrans , purchaseString);
+                /*Stories.Story buyStory = new Stories.Story(curTrans , purchaseString);
                 Stories.DISPLAYED_ITEMS.add(0, buyStory);
                 Stories.ALL_ITEMS.add(0, buyStory);
                 Stories.updated = true;
@@ -198,11 +199,11 @@ public class PaymentInitFragment extends Fragment {
                                 }
                             }, 2000);
                         } else {
-                            /*EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
+                            EditText ibanEdit = (EditText) v.findViewById(R.id.ibanEdit);
                             EditText amountEdit = (EditText) v.findViewById(R.id.amountEdit);
                             ibanEdit.setEnabled(true);
                             amountEdit.setEnabled(true);
-                            ((FloatingActionButton) v.findViewById(R.id.payButton)).setVisibility(View.VISIBLE);*/
+                            ((FloatingActionButton) v.findViewById(R.id.payButton)).setVisibility(View.VISIBLE);
                             MainActivity.getCurrentActivity().resetPaymentView(true);
                             isActive = false;
                         }
@@ -211,7 +212,7 @@ public class PaymentInitFragment extends Fragment {
 
 
             }
-        });
+        });*/
         return v;
     }
 

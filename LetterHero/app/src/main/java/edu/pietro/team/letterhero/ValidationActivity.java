@@ -112,7 +112,7 @@ public class ValidationActivity extends AppCompatActivity {
             //((EditText)findViewById(R.id.nameEdit)).setText(intent.getStringExtra("name"));
             ((EditText)findViewById(R.id.ibanEdit)).setText(intent.getStringExtra("iban"));
         } else if (hasName) {
-            ((TextView)findViewById(R.id.nameEdit)).setText(intent.getStringExtra("name"));
+            ((TextView)findViewById(R.id.type)).setText(intent.getStringExtra("name"));
         } else /* hasIban == true !! */ {
             ((TextView)findViewById(R.id.ibanEdit)).setText(intent.getStringExtra("iban"));
             //findViewById(R.id.ibanEdit).setVisibility(View.VISIBLE);
