@@ -361,6 +361,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         try {
                             URL imageUrl = new URL(ENDPOINT_IMAGE);
                             URL textUrl = new URL(ENDPOINT_TEXT);
+
                             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                             Log.d("Image resolution", bitmap.getWidth() + " x " + bitmap.getHeight());
 
