@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:clipToPadding="false"
+    android:background="#297044">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:id="@+id/bgFake"
+        android:layout_marginTop="24dp"
+        android:layout_height="200dp"
+        android:scaleType="fitCenter"
+        android:elevation="8dp"
+        android:background="@android:color/white"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imagePurchasable"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="76dp"
+        android:id="@+id/imageProgress"
+        android:elevation="8dp" />
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="24dp"
+        android:background="#FFFFFF"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/status_bar_background" />
+
+    <ImageView
+        android:id="@+id/paySuccess"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignBottom="@+id/payButton"
+        android:layout_alignEnd="@+id/payButton"
+        android:layout_alignStart="@+id/payButton"
+        android:layout_alignTop="@+id/payButton"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_done_black_256dp" />
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        app:srcCompat="@android:color/background_dark"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/navigation_background" />
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:id="@+id/imagePurchasable"
+        android:layout_marginTop="24dp"
+        android:layout_height="200dp"
+        android:scaleType="fitCenter"
+        android:elevation="8dp"
+        android:background="@android:color/white"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/ic_dollar_bill"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/payButtonOld"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/navigation_background"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="16dp"
+        app:elevation="2dp"
+        app:backgroundTint="#ff4444"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:visibility="invisible"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/send_white_24dp" />
+
+    <ImageView
+        android:textColorHint="@color/veryTransparentWhite"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:padding="6dp"
+        android:id="@+id/successIcon"
+        app:srcCompat="@drawable/success_transfer_checkmark"
+        android:background="@drawable/success_transfer"
+        android:elevation="8dp"
+        android:textColor="@android:color/white"
+        android:gravity="center_horizontal"
+        android:layout_alignTop="@+id/imagePurchasable"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="174dp" />
+
+    <EditText
+        android:hint="0,00 €"
+        android:textColorHint="@color/veryTransparentWhite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/amountEdit"
+        android:textSize="24dp"
+        android:background="@drawable/amount_bg"
+        android:elevation="8dp"
+        android:maxLines="1"
+        android:textColor="@android:color/white"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:gravity="center_horizontal"
+        android:layout_alignTop="@+id/imagePurchasable"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="174dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameEdit"
+        android:hint="Enter name"
+        android:textSize="18sp"
+        android:textColorHint="@color/veryTransparentWhite"
+        android:background="@android:color/transparent"
+        android:textColor="@android:color/white"
+        android:layout_marginLeft="16dp"
+        android:layout_alignTop="@+id/profileImage"
+        android:layout_toEndOf="@+id/profileImage"
+        android:padding="0dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ibanEdit"
+        android:textColorHint="@color/veryTransparentWhite"
+        android:textColor="@color/transparentWhite"
+        android:hint="Enter IBAN"
+        android:background="@android:color/transparent"
+        android:layout_below="@+id/nameEdit"
+        android:layout_alignStart="@+id/nameEdit"
+        android:textSize="14sp" />
+
+    <HorizontalScrollView
+        android:layout_below="@id/amountEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/paymentTitle"
+        android:layout_marginTop="16dp"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"
+        android:scrollbars="none"
+        android:requiresFadingEdge="horizontal"
+        android:fadingEdgeLength="20dp"
+        android:layout_centerHorizontal="true">
+        <TextView
+            android:text="Money transfer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollHorizontally="true"
+            android:id="@+id/paymentTitleContent"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:maxLines="1" />
+    </HorizontalScrollView>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileImage"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/default_user"
+        android:layout_marginTop="12dp"
+        android:layout_below="@+id/recipientTitle"
+        android:layout_alignStart="@+id/recipientTitle" />
+
+    <TextView
+        android:text="RECIPIENT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/recipientTitle"
+        android:textColor="@android:color/white"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/paymentTitle"
+        android:textSize="14sp"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="DETAILS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/detailsTitle"
+        android:textColor="@android:color/white"
+        android:layout_marginLeft="16dp"
+        android:textSize="14sp"
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/profileImage"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:background="#14582D"
+        android:id="@+id/payButton"
+        android:paddingLeft="130dp"
+        android:paddingRight="130dp"
+        android:elevation="21dp"
+        android:maxLines="1"
+        android:text="Send now"
+        android:layout_above="@+id/navigation_background"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="@android:color/white"
+        android:drawableRight="@drawable/right_24dp" />
+
+    <EditText
+        android:layout_height="wrap_content"
+        android:id="@+id/purchaseMessage"
+        android:hint="Enter reference line"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/chat_bg"
+        android:layout_width="wrap_content"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textSize="18dp"
+        android:inputType="textCapSentences|textShortMessage"
+        android:layout_below="@id/detailsTitle"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"/>
+
+    <ProgressBar
+        android:id="@+id/payProgress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:elevation="2dp"
+        tools:visibility="invisible"
+        android:layout_alignBottom="@+id/payButtonOld"
+        android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>
