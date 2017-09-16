@@ -65,7 +65,7 @@ public class DocumentConfirmationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View v = inflater.inflate(R.layout.fragment_payment_init, container, false);
+        final View v = inflater.inflate(R.layout.fragment_document_detected, container, false);
         /*final Button confirm = (Button) v.findViewById(R.id.payButton);
         final ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.payProgress);
         progressBar.setVisibility(View.INVISIBLE);

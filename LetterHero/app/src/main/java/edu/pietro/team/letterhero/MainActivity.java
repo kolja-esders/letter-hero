@@ -353,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
                             // Potentially add unique id to both send operations
 
-                            sendImage(bitmap);
+                            //sendImage(bitmap);
                             JSONObject response = sendText(detectedTextBuilder.toString());
 
                             Document doc = Document.fromJSON(response);

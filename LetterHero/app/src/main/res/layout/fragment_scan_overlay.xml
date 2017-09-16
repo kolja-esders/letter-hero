@@ -7,7 +7,7 @@
     android:animateLayoutChanges="true">
 
     <ImageView
-        android:id="@+id/payhero_logo"
+        android:id="@+id/logo"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
@@ -18,7 +18,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/payhero_logo"
+        android:layout_below="@+id/logo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="2dp"
         android:id="@+id/processing_status"
@@ -42,11 +42,20 @@
         app:srcCompat="@drawable/payment_white_trans_128dp" />
 
     <ImageView
-        app:srcCompat="@drawable/circle_green"
+        app:srcCompat="@drawable/circle_border_white"
         android:layout_above="@+id/payment_icon"
         android:layout_centerHorizontal="true"
         android:id="@+id/snap"
         android:clickable="true"
-        android:layout_width="50dp"
-        android:layout_height="50dp" />
+        android:layout_width="64dp"
+        android:layout_height="64dp" />
+
+    <TextView
+        android:text="CLICK TO SCAN"
+        android:textColor="#99FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/payment_icon"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/instructions" />
 </RelativeLayout>

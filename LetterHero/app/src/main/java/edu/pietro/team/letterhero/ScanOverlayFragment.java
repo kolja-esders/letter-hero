@@ -49,7 +49,6 @@ public class ScanOverlayFragment extends Fragment {
         takeSnap.setOnClickListener(new ImageView.OnClickListener() {
             public void onClick(View v) {
                 mDefaultEventBus.post(new OnImageCaptureRequested());
-                Log.d("ScanOverlay", "Hello there");
             }
         });
 
@@ -140,7 +139,7 @@ public class ScanOverlayFragment extends Fragment {
     }
 
     private void startProcessingStatus(int timeoutMillis) {
-        final ImageView imageView = (ImageView) getActivity().findViewById(R.id.payhero_logo);
+        final ImageView imageView = (ImageView) getActivity().findViewById(R.id.logo);
         imageView.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.pulse));
 
         // After 10 seconds we declare failure...
@@ -157,7 +156,7 @@ public class ScanOverlayFragment extends Fragment {
     }
 
     private void startErrorStatus(String status, int timeoutMillis) {
-        final ImageView imageView = (ImageView) getActivity().findViewById(R.id.payhero_logo);
+        final ImageView imageView = (ImageView) getActivity().findViewById(R.id.logo);
         final TextView processingStatus = (TextView) getActivity().findViewById(R.id.processing_status);
 
         processingStatus.setText(status);
@@ -177,7 +176,7 @@ public class ScanOverlayFragment extends Fragment {
     }
 
     private void stopStatus() {
-        final ImageView imageView = (ImageView) getActivity().findViewById(R.id.payhero_logo);
+        final ImageView imageView = (ImageView) getActivity().findViewById(R.id.logo);
         final TextView processingStatus = (TextView) getActivity().findViewById(R.id.processing_status);
 
         imageView.clearAnimation();

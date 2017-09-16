@@ -12,6 +12,16 @@
 
     <ImageView
         android:layout_width="fill_parent"
+        android:layout_marginTop="24dp"
+        android:layout_height="144dp"
+        android:elevation="2dp"
+        app:srcCompat="@android:color/white"
+        android:layout_toEndOf="@+id/context"
+        android:id="@+id/white_bg"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:layout_width="fill_parent"
         android:layout_height="24dp"
         android:background="#FFFFFF"
         android:layout_alignParentTop="true"
@@ -60,14 +70,6 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text="Name"
-        android:ems="10"
-        android:id="@+id/company" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/date"
         android:textColorHint="@color/veryTransparentWhite"
         android:textColor="@color/transparentWhite"
@@ -111,23 +113,29 @@
     <ImageView
         android:layout_width="90dp"
         android:layout_height="160dp"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:id="@+id/img"
+        android:elevation="6dp"
         android:scaleType="fitCenter"
-        android:background="@android:color/white"
-        android:src="@drawable/ic_dollar_bill"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp"
-        android:layout_below="@+id/company"
-        android:layout_alignStart="@+id/date" />
+        android:background="@android:color/holo_red_dark"
+        android:layout_below="@+id/status_bar_background"
+        android:layout_alignParentStart="true" />
 
-    <ProgressBar
-        style="?android:attr/progressBarStyle"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="60dp"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:id="@+id/imgProgress"
-        android:layout_below="@+id/company"
-        android:layout_alignStart="@+id/img" />
+    <EditText
+        android:layout_width="wrap_content"
+        android:editable="false"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="Zurich"
+        android:elevation="4dp"
+        android:textSize="24sp"
+        android:id="@+id/company"
+        android:layout_alignTop="@+id/img"
+        android:layout_toEndOf="@+id/img"
+        android:layout_marginStart="16dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:textColor="@android:color/black" />
 
 </RelativeLayout>
