@@ -23,6 +23,8 @@ import edu.pietro.team.letterhero.social.User;
 
 public class OcrDetectionProcessor implements Detector.Processor<TextBlock> {
 
+    public static String lastOcr = "";
+
     private final static String TAG = "OcrDetectionProcessor";
 
     @Override
@@ -42,6 +44,7 @@ public class OcrDetectionProcessor implements Detector.Processor<TextBlock> {
             }
         }
         String ocrText = sb.toString();
+        lastOcr = ocrText;
         Log.d(TAG, ocrText);
         String iban = LangAnalytics.getIBAN(ocrText);
         String amount = LangAnalytics.getAmount(ocrText);
