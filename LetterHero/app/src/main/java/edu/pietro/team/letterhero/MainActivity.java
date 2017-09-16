@@ -33,10 +33,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.MultiDetector;
-import com.google.android.gms.vision.barcode.Barcode;
-import com.google.android.gms.vision.barcode.BarcodeDetector;
-import com.google.android.gms.vision.face.FaceDetector;
-import com.google.android.gms.vision.face.LargestFaceFocusingProcessor;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import org.greenrobot.eventbus.EventBus;
@@ -62,10 +58,7 @@ import edu.pietro.team.letterhero.helper.Utils;
 import edu.pietro.team.letterhero.social.Item;
 import edu.pietro.team.letterhero.social.MoneyTransfer;
 import edu.pietro.team.letterhero.social.User;
-import edu.pietro.team.letterhero.vision.BarcodeTracker;
 import edu.pietro.team.letterhero.vision.CameraSourcePreview;
-import edu.pietro.team.letterhero.vision.FaceTracker;
-import edu.pietro.team.letterhero.vision.FirstFocusingProcessor;
 import edu.pietro.team.letterhero.vision.ImageFetchingDetector;
 import edu.pietro.team.letterhero.vision.OcrDetectionProcessor;
 import okhttp3.MediaType;
@@ -207,26 +200,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         // dummy detector saving the last frame in order to send it to Microsoft in case of face detection
         ImageFetchingDetector imageFetchingDetector = new ImageFetchingDetector();
 
-        // We need to provide at least one detector to the camera :x
-        FaceDetector faceDetector = new FaceDetector.Builder(ctx).build();
-        faceDetector.setProcessor(
-                new LargestFaceFocusingProcessor.Builder(faceDetector, new FaceTracker(imageFetchingDetector))
-                        .build());
-
-        BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(ctx).build();
-        //barcodeDetector.setProcessor(new BarcodeDetectionProcessor());
-        barcodeDetector.setProcessor(
-                new FirstFocusingProcessor<Barcode>(barcodeDetector, new BarcodeTracker())
-        );
-
         TextRecognizer textRecognizer = new TextRecognizer.Builder(ctx).build();
         textRecognizer.setProcessor(new OcrDetectionProcessor());
         // TODO: Check if the TextRecognizer is operational.
 
         MultiDetector multiDetector = new MultiDetector.Builder()
                 .add(imageFetchingDetector)
-                .add(faceDetector)
-                .add(barcodeDetector)
                 .add(textRecognizer)
                 .build();
 
