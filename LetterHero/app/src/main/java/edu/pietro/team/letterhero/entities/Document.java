@@ -88,6 +88,7 @@ public class Document {
                     context.put(key, (String) value);
                 }
             }
+            document.setContext(context);
         } catch (JSONException e) {
             e.printStackTrace();
         }
