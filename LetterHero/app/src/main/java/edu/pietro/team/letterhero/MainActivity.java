@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -48,7 +49,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Map;
 
 import edu.pietro.team.letterhero.entities.AmountOfMoney;
 import edu.pietro.team.letterhero.entities.Document;
@@ -103,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     private static MainActivity currentActivity = null;
 
-    private MoneyTransfer currentTransfer = null;
+    private Document currentDoc = null;
 
     public static MainActivity getCurrentActivity() {
         return currentActivity;
@@ -287,29 +290,29 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     @Subscribe
-    public void showPaymentInit(OnDocumentProcessed e) {
+    public void showConfirmation(OnDocumentProcessed e) {
         final Document document = e.getDocument();
-        /*final ProcessingState assumedProcessingState = e.getAssumedProcessingState();
+        final ProcessingState assumedProcessingState = e.getAssumedProcessingState();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 synchronized (mProcessingLock) {
-                    if (mViewPager.getCurrentItem() == 1 && moneyTransfer.isValid()
+                    if (mViewPager.getCurrentItem() == 0
                             && (mProcessingState == assumedProcessingState || mProcessingState == ProcessingState.NOLOCK)) {
 
-                        View view = mCollectionPagerAdapter.getItem(2).getView();
-                        populatePaymentInitView(view, moneyTransfer);
+                        View view = mCollectionPagerAdapter.getItem(1).getView();
+                        populateConfirmationView(view, document);
 
                         Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                         v.vibrate(150);
                         EventBus.getDefault().post(new OnStopMessage());
 
-                        mViewPager.setCurrentItem(2);
+                        mViewPager.setCurrentItem(1);
                         mProcessingState = ProcessingState.NOLOCK;
                     }
                 }
             }
-        });*/
+        });
     }
 
     @Subscribe
@@ -380,10 +383,36 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         });
     }
 
+    private void populateConfirmationView(View v, Document d) {
+        this.currentDoc = d;
+
+        Map<String, String> context = d.getContext();
+        Image img = d.getImage();
+
+        ByteBuffer buffer = img.getPlanes()[0].getBuffer();
+        byte[] bytes = new byte[buffer.capacity()];
+        buffer.get(bytes);
+        Bitmap bitmapImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
+
+        EditText companyEdit = (EditText) v.findViewById(R.id.company);
+        EditText dateEdit = (EditText) v.findViewById(R.id.date);
+        EditText typeEdit = (EditText) v.findViewById(R.id.type);
+        EditText contextEdit = (EditText) v.findViewById(R.id.context);
+        ImageView imageView = (ImageView) v.findViewById(R.id.img);
+
+        companyEdit.setText(d.getSender());
+        typeEdit.setText(d.getType());
+        imageView.setImageBitmap(bitmapImage);
+
+        if (context.containsKey("dateCreation")) {
+            dateEdit.setText(context.get("dateCreation"));
+        }
+    }
+
     private void populatePaymentInitView(View v, MoneyTransfer mt) {
         boolean isPurchase = mt.getItem() != null;
 
-        this.currentTransfer = mt;
+
 
         User recipient = mt.getRecipient();
         String recipientName = recipient.getName();
@@ -576,12 +605,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         });
     }
 
-    public MoneyTransfer getCurrentTransfer(){
-        return this.currentTransfer;
+    public Document getCurrentDoc(){
+        return this.currentDoc;
     }
 
-    public void setCurrentTransfer(MoneyTransfer trans){
-        this.currentTransfer = trans;
+    public void setCurrentDoc(Document doc){
+        this.currentDoc = doc;
     }
 
     public boolean onTryStartProcessing(ProcessingState ps) {
