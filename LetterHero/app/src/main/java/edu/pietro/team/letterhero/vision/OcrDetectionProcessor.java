@@ -13,7 +13,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.List;
 
 import edu.pietro.team.letterhero.entities.AmountOfMoney;
-import edu.pietro.team.letterhero.event.OnPaymentInit;
+import edu.pietro.team.letterhero.event.OnDocumentProcessed;
 import edu.pietro.team.letterhero.helper.AddressBook;
 import edu.pietro.team.letterhero.helper.LangAnalytics;
 import edu.pietro.team.letterhero.helper.ProcessingState;
@@ -57,7 +57,7 @@ public class OcrDetectionProcessor implements Detector.Processor<TextBlock> {
             Item moneyTransferItem = new Item("Money transfer", "", "", null);
             AmountOfMoney aom = amount.equals("") ? new AmountOfMoney(0.0)
                     : new AmountOfMoney(Double.valueOf(amount));
-            EventBus.getDefault().post(new OnPaymentInit(
+            EventBus.getDefault().post(new OnDocumentProcessed(
                     new MoneyTransfer(recipient, moneyTransferItem, aom), ProcessingState.NOLOCK));
         }
     }

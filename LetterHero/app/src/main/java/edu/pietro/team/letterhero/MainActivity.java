@@ -2,7 +2,6 @@ package edu.pietro.team.letterhero;
 
 import android.Manifest;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -52,10 +51,12 @@ import java.net.URL;
 import java.util.List;
 
 import edu.pietro.team.letterhero.entities.AmountOfMoney;
+import edu.pietro.team.letterhero.entities.Document;
 import edu.pietro.team.letterhero.event.FeedFilterClicked;
+import edu.pietro.team.letterhero.event.OnDocumentProcessed;
 import edu.pietro.team.letterhero.event.OnErrorDuringDetectionPostProcessing;
 import edu.pietro.team.letterhero.event.OnImageCaptureRequested;
-import edu.pietro.team.letterhero.event.OnPaymentInit;
+import edu.pietro.team.letterhero.event.OnDocumentProcessed;
 import edu.pietro.team.letterhero.event.OnStartDetectionPostProcessing;
 import edu.pietro.team.letterhero.event.OnStopMessage;
 import edu.pietro.team.letterhero.helper.DownloadImageTask;
@@ -115,40 +116,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             "78:02:f8:e7:96:ae"
     };
 
-    private final BroadcastReceiver mBtReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-
-            switch (action){
-                case BluetoothDevice.ACTION_ACL_CONNECTED:
-                    BluetoothDevice dev = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    Log.d("BLUETOOTH", "connected to " + dev.getAddress());
-                    for (String d : BT_CONTEXT_DEVICES) {
-                        if (d.equals(dev.getAddress())){
-                            User seller = User.DISNEY;
-                            Item ticket = new Item(
-                                    "Family ticket",
-                                    "Disneyland",
-                                    "http://www.parkerlebnis.de/wp-content/uploads/2013/11/disneyland-paris.jpg",
-                                    new AmountOfMoney(99.0)
-                            );
-                            EventBus.getDefault().post(new OnPaymentInit(
-                                    new MoneyTransfer(seller, ticket, new AmountOfMoney(99.0)),
-                                    ProcessingState.NOLOCK
-                            ));
-                            break;
-                        }
-                    }
-                    break;
-                case BluetoothDevice.ACTION_ACL_DISCONNECTED:
-                    Log.d("BLUETOOTH", "disconnected");
-                    break;
-            }
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,7 +130,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
         filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        registerReceiver(mBtReceiver, filter);
 
         mCollectionPagerAdapter =
                 new CollectionPagerAdapter(getFragmentManager());
@@ -305,7 +271,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         if (mCameraSource != null) {
             mCameraSource.release();
         }
-        unregisterReceiver(mBtReceiver);
     }
 
     @Override
@@ -314,9 +279,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     @Subscribe
-    public void showPaymentInit(OnPaymentInit e) {
-        final MoneyTransfer moneyTransfer = e.getPurchase();
-        final ProcessingState assumedProcessingState = e.getAssumedProcessingState();
+    public void showPaymentInit(OnDocumentProcessed e) {
+        final Document document = e.getDocument();
+        /*final ProcessingState assumedProcessingState = e.getAssumedProcessingState();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -336,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     }
                 }
             }
-        });
+        });*/
     }
 
     @Subscribe
@@ -382,22 +347,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             // Potentially add unique id to both send operations
 
                             sendImage(bitmap);
-                            sendText(detectedTextBuilder.toString());
+                            JSONObject response = sendText(detectedTextBuilder.toString());
 
+                            Document doc = Document.fromJSON(response);
 
-
-                            //final JSONObject jsonProd = new JSONObject(prdResp);
-                            /*Item foundProduct = new Item(jsonProd.getString("name"), jsonProd.getString("brand"), jsonProd.getString("display_img_path"), new AmountOfMoney(jsonProd.getDouble("price")));
-                            User seller = User.ZALANDO;
-                            EventBus.getDefault().post(new OnPaymentInit(
-                                    new MoneyTransfer(seller, foundProduct, foundProduct.getRetailPrice()),
+                            EventBus.getDefault().post(new OnDocumentProcessed(
+                                    doc,
                                     ProcessingState.OBJECT_LOCK
-                            ));*/
-
-                            /*EventBus.getDefault().post(new OnDocumentDetection(
-                                    new MoneyTransfer(seller, foundProduct, foundProduct.getRetailPrice()),
-                                    ProcessingState.OBJECT_LOCK
-                            ));*/
+                            ));
 
 
                         } catch (Exception x) {
@@ -410,7 +367,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     }
                 });
                 thread.start();
-
             }
 
         });
@@ -514,7 +470,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         Log.d("[sendImage]", "Response: " + responseStr);
     }
 
-    private void sendText(String text) {
+    private JSONObject sendText(String text) {
         final String ENDPOINT_TEXT = "http://2702645a.ngrok.io/textrec/text";
         final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -539,17 +495,19 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         try {
             Response response = client.newCall(request).execute();
             responseStr = response.body().string();
-
-            JSONObject json = new JSONObject(responseStr);
-            String type = json.getString("type");
-            String dateOfLetter = json.getString("type");
-            String company = json.getString("sender");
-
-        } catch (IOException | JSONException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
         Log.d("[sendText]", "Response: " + responseStr);
+
+        JSONObject result = null;
+        try {
+            result = new JSONObject(responseStr);
+        } catch (JSONException e) {
+
+        }
+
+        return result;
     }
 
     public void disableScrolling() {
