@@ -4,11 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <edu.pietro.team.letterhero.vision.CameraSourcePreview
+    <!--<edu.pietro.team.letterhero.vision.CameraSourcePreview-->
+        <!--android:id="@+id/preview"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:background="@color/bgFeedToolbar" />-->
+
+    <FrameLayout
         android:id="@+id/preview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@color/bgFeedToolbar" />
+        android:layout_weight="1"
+        />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"

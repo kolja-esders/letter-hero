@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.hardware.Camera;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -45,6 +47,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -75,6 +78,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
+
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -90,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     private Boolean mFeedFilterIsPublic = true;
 
-    private CameraSourcePreview mPreview;
+    private CameraPreview mPreview;
 
     private CollectionPagerAdapter mCollectionPagerAdapter;
 
@@ -105,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     private Document currentDoc = null;
 
+    private Camera mCamera;
+
     public static MainActivity getCurrentActivity() {
         return currentActivity;
     }
@@ -116,216 +123,32 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             "78:02:f8:e7:96:ae"
     };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        /*String[] permissions = {
-                "android.permission.READ_EXTERNAL_STORAGE",
-                "android.permission.WRITE_EXTERNAL_STORAGE"
-        };
-        ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_STORAGE_PERM);*/
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
-        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-
-        mCollectionPagerAdapter =
-                new CollectionPagerAdapter(getFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mCollectionPagerAdapter);
-        mViewPager.setOffscreenPageLimit(2);
-        mViewPager.setCurrentItem(0);
-        mViewPager.setOnTouchListener(new View.OnTouchListener()
-        {
-            @Override
-            public boolean onTouch(View v, MotionEvent event)
-            {
-                return true;
-            }
-        });
-        mPreview = (CameraSourcePreview) findViewById(R.id.preview);
-
-        // Check for the camera permission before accessing the camera.  If the
-        // permission is not granted yet, request permission.
-        int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-        if (rc == PackageManager.PERMISSION_GRANTED) {
-            createCameraSource();
-        } else {
-            requestCameraPermission();
+    /** A safe way to get an instance of the Camera object. */
+    public static Camera getCameraInstance(){
+        Camera c = null;
+        try {
+            c = Camera.open(); // attempt to get a Camera instance
         }
-    }
-
-    /**
-     * Handles the requesting of the camera permission.  This includes
-     * showing a "Snackbar" message of why the permission is needed then
-     * sending the request.
-     */
-    private void requestCameraPermission() {
-        Log.w(TAG, "Camera permission is not granted. Requesting permission");
-        final String[] permissions = new String[]{Manifest.permission.CAMERA};
-        if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.CAMERA)) {
-            ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM);
-        }
-    }
-
-    /**
-     * Creates and starts the camera.
-     */
-    private void createCameraSource() {
-        Context ctx = getApplicationContext();
-        Point displaySize = new Point();
-        getWindowManager().getDefaultDisplay().getRealSize(displaySize);
-
-        // dummy detector saving the last frame in order to send it to Microsoft in case of face detection
-        ImageFetchingDetector imageFetchingDetector = new ImageFetchingDetector();
-
-        mTextRecognizer = new TextRecognizer.Builder(ctx).build();
-        mTextRecognizer.setProcessor(new OcrDetectionProcessor());
-        // TODO: Check if the TextRecognizer is operational.
-
-        MultiDetector multiDetector = new MultiDetector.Builder()
-                .add(imageFetchingDetector)
-                .add(mTextRecognizer)
-                .build();
-
-        mCameraSource = new CameraSource.Builder(ctx, multiDetector)
-                .setFacing(CameraSource.CAMERA_FACING_BACK)
-                .setAutoFocusEnabled(true)
-                .setRequestedFps(5.0f)
-                .setRequestedPreviewSize(displaySize.y, displaySize.x)
-                .build();
-    }
-
-    private void startCameraSource() {
-        int code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
-                getApplicationContext());
-        if (code != ConnectionResult.SUCCESS) {
-            Log.e(TAG, "Google Play Services unavailable.");
-            return;
+        catch (Exception e){
+            // Camera is not available (in use or does not exist)
         }
 
-        if (mCameraSource != null) {
-            try {
-                mPreview.start(mCameraSource);
-            } catch (IOException e) {
-                Log.e(TAG, "Unable to start camera source.", e);
-                mCameraSource.release();
-                mCameraSource = null;
-            }
-        }
+        //set camera to continually auto-focus
+        Camera.Parameters params = c.getParameters();
+        //*EDIT*//params.setFocusMode("continuous-picture");
+        //It is better to use defined constraints as opposed to String, thanks to AbdelHady
+        params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        c.setParameters(params);
+        return c; // returns null if camera is unavailable
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.friend_feed, menu);
-        if (menu.size() > 0) {
-            menu.getItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
+    private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_favorite:
-                String newTitle;
-                if (mFeedFilterIsPublic) {
-                    newTitle = "Show friends purchases";
-                } else {
-                    newTitle = "Show own purchases";
-                }
-                mFeedFilterIsPublic ^= true;
-                EventBus.getDefault().post(new FeedFilterClicked(!mFeedFilterIsPublic));
-                item.setTitle(newTitle);
-                return true;
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-        }
-    }
+        @Override
+        public void onPictureTaken(final byte[] bytes, Camera camera) {
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        startCameraSource();
-        currentActivity = this;
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mPreview.stop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mCameraSource != null) {
-            mCameraSource.release();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        Log.d("Back", "I'll be back");
-    }
-
-    @Subscribe
-    public void showConfirmation(OnDocumentProcessed e) {
-        final Document document = e.getDocument();
-        final ProcessingState assumedProcessingState = e.getAssumedProcessingState();
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                synchronized (mProcessingLock) {
-                    if (mViewPager.getCurrentItem() == 0
-                            && (mProcessingState == assumedProcessingState || mProcessingState == ProcessingState.NOLOCK)) {
-
-                        View view = mCollectionPagerAdapter.getItem(1).getView();
-                        populateConfirmationView(view, document);
-
-                        Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-                        v.vibrate(150);
-                        EventBus.getDefault().post(new OnStopMessage());
-
-                        mViewPager.setCurrentItem(1);
-                        mProcessingState = ProcessingState.NOLOCK;
-                    }
-                }
-            }
-        });
-    }
-
-    @Subscribe
-    public void onMessageEvent(OnImageCaptureRequested e) {
-
-        Log.d("EVENT_BUS", "Image capture requested.");
-
-        /*if (!onTryStartProcessing(ProcessingState.OBJECT_LOCK)){
-            return;
-        }*/
-
-        mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onPictureTaken(final byte[] bytes) {
-                EventBus.getDefault().post(new OnStartDetectionPostProcessing("Processing document..."));
+            EventBus.getDefault().post(new OnStartDetectionPostProcessing("Processing document..."));
 
                 // Need to send data not on rendering thread.
                 Thread thread = new Thread(new Runnable() {
@@ -378,9 +201,282 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     }
                 });
                 thread.start();
-            }
+        }
+    };
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
+        /*String[] permissions = {
+                "android.permission.READ_EXTERNAL_STORAGE",
+                "android.permission.WRITE_EXTERNAL_STORAGE"
+        };
+        ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_STORAGE_PERM);*/
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+
+        mCollectionPagerAdapter =
+                new CollectionPagerAdapter(getFragmentManager());
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mCollectionPagerAdapter);
+        mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setCurrentItem(0);
+        mViewPager.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                return true;
+            }
         });
+        mCamera = getCameraInstance();
+
+        // Create our Preview view and set it as the content of our activity.
+        mPreview = new CameraPreview(this, mCamera);
+        FrameLayout preview = (FrameLayout) findViewById(R.id.preview);
+        preview.addView(mPreview);
+
+        // Check for the camera permission before accessing the camera.  If the
+        // permission is not granted yet, request permission.
+        int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        if (rc == PackageManager.PERMISSION_GRANTED) {
+            //createCameraSource();
+        } else {
+            requestCameraPermission();
+        }
+    }
+
+    /**
+     * Handles the requesting of the camera permission.  This includes
+     * showing a "Snackbar" message of why the permission is needed then
+     * sending the request.
+     */
+    private void requestCameraPermission() {
+        Log.w(TAG, "Camera permission is not granted. Requesting permission");
+        final String[] permissions = new String[]{Manifest.permission.CAMERA};
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.CAMERA)) {
+            ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM);
+        }
+    }
+
+    /**
+     * Creates and starts the camera.
+     */
+//    private void createCameraSource() {
+//        Context ctx = getApplicationContext();
+//        Point displaySize = new Point();
+//        getWindowManager().getDefaultDisplay().getRealSize(displaySize);
+//
+//        // dummy detector saving the last frame in order to send it to Microsoft in case of face detection
+//        ImageFetchingDetector imageFetchingDetector = new ImageFetchingDetector();
+//
+//        mTextRecognizer = new TextRecognizer.Builder(ctx).build();
+//        mTextRecognizer.setProcessor(new OcrDetectionProcessor());
+//        // TODO: Check if the TextRecognizer is operational.
+//
+//        MultiDetector multiDetector = new MultiDetector.Builder()
+//                .add(imageFetchingDetector)
+//                .add(mTextRecognizer)
+//                .build();
+//
+//        mCameraSource = new CameraSource.Builder(ctx, multiDetector)
+//                .setFacing(CameraSource.CAMERA_FACING_BACK)
+//                .setAutoFocusEnabled(true)
+//                .setRequestedFps(5.0f)
+//                .setRequestedPreviewSize(displaySize.y, displaySize.x)
+//                .build();
+//    }
+//
+//    private void startCameraSource() {
+//        int code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
+//                getApplicationContext());
+//        if (code != ConnectionResult.SUCCESS) {
+//            Log.e(TAG, "Google Play Services unavailable.");
+//            return;
+//        }
+//
+//        if (mCameraSource != null) {
+//            try {
+//                mPreview.start(mCameraSource);
+//            } catch (IOException e) {
+//                Log.e(TAG, "Unable to start camera source.", e);
+//                mCameraSource.release();
+//                mCameraSource = null;
+//            }
+//        }
+//    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.friend_feed, menu);
+        if (menu.size() > 0) {
+            menu.getItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_favorite:
+                String newTitle;
+                if (mFeedFilterIsPublic) {
+                    newTitle = "Show friends purchases";
+                } else {
+                    newTitle = "Show own purchases";
+                }
+                mFeedFilterIsPublic ^= true;
+                EventBus.getDefault().post(new FeedFilterClicked(!mFeedFilterIsPublic));
+                item.setTitle(newTitle);
+                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //startCameraSource();
+        currentActivity = this;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //mPreview.stop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mCameraSource != null) {
+            mCameraSource.release();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("Back", "I'll be back");
+    }
+
+    @Subscribe
+    public void showConfirmation(OnDocumentProcessed e) {
+        final Document document = e.getDocument();
+        final ProcessingState assumedProcessingState = e.getAssumedProcessingState();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (mProcessingLock) {
+                    if (mViewPager.getCurrentItem() == 0
+                            && (mProcessingState == assumedProcessingState || mProcessingState == ProcessingState.NOLOCK)) {
+
+                        View view = mCollectionPagerAdapter.getItem(1).getView();
+                        populateConfirmationView(view, document);
+
+                        Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                        v.vibrate(150);
+                        EventBus.getDefault().post(new OnStopMessage());
+
+                        mViewPager.setCurrentItem(1);
+                        mProcessingState = ProcessingState.NOLOCK;
+                    }
+                }
+            }
+        });
+    }
+
+    @Subscribe
+    public void onMessageEvent(OnImageCaptureRequested e) {
+
+        Log.d("EVENT_BUS", "Image capture requested.");
+
+        /*if (!onTryStartProcessing(ProcessingState.OBJECT_LOCK)){
+            return;
+        }*/
+// get an image from the camera
+        mCamera.takePicture(null, null, mPicture);
+
+
+//        mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
+//            @RequiresApi(api = Build.VERSION_CODES.M)
+//            @Override
+//            public void onPictureTaken(final byte[] bytes) {
+//                EventBus.getDefault().post(new OnStartDetectionPostProcessing("Processing document..."));
+//
+//                // Need to send data not on rendering thread.
+//                Thread thread = new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        try {
+//
+//                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                            Log.d("Image resolution", bitmap.getWidth() + " x " + bitmap.getHeight());
+//
+//                            Frame frame = new Frame.Builder().setBitmap(bitmap).build();
+//
+//                            StringBuilder detectedTextBuilder = new StringBuilder(); ;
+//                            SparseArray<TextBlock> detectedTextRaw = mTextRecognizer.detect(frame);
+//                            for (int i = 0; i < detectedTextRaw.size(); ++i) {
+//                                TextBlock item = detectedTextRaw.valueAt(i);
+//                                List components = item.getComponents();
+//                                for (int j = 0; j < components.size(); ++j) {
+//                                    if (components.get(j) instanceof Line) {
+//                                        Line l = (Line) components.get(j);
+//                                        detectedTextBuilder.append(l.getValue());
+//                                        detectedTextBuilder.append(" ");
+//                                    }
+//                                }
+//                            }
+//
+//                            // add unique id to both send operations
+//                            String id = UUID.randomUUID().toString();
+//
+//                            sendImage(bitmap, id);
+//                            JSONObject response = sendText(detectedTextBuilder.toString(), id);
+//
+//                            System.out.println("json received: " + response.toString());
+//                            Document doc = Document.fromJSON(response);
+//                            doc.setBitmap(bitmap);
+//
+//                            EventBus.getDefault().post(new OnDocumentProcessed(
+//                                    doc,
+//                                    ProcessingState.OBJECT_LOCK
+//                            ));
+//
+//
+//                        } catch (Exception x) {
+//                            EventBus.getDefault().post(new OnErrorDuringDetectionPostProcessing("No internet connection"));
+//
+//                            x.printStackTrace();
+//                        } finally {
+//                            onStopProcessing(ProcessingState.OBJECT_LOCK);
+//                        }
+//                    }
+//                });
+//                thread.start();
+//            }
+//
+//        });
     }
 
     private void populateConfirmationView(View v, Document d) {
