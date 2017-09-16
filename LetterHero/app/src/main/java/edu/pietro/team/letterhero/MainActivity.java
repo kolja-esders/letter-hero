@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mCollectionPagerAdapter);
         mViewPager.setOffscreenPageLimit(2);
-        mViewPager.setCurrentItem(1);
+        mViewPager.setCurrentItem(0);
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
 
         // Check for the camera permission before accessing the camera.  If the
