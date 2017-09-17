@@ -8,18 +8,7 @@ import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.text.Line;
 import com.google.android.gms.vision.text.TextBlock;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.List;
-
-import edu.pietro.team.letterhero.entities.AmountOfMoney;
-import edu.pietro.team.letterhero.event.OnDocumentProcessed;
-import edu.pietro.team.letterhero.helper.AddressBook;
-import edu.pietro.team.letterhero.helper.LangAnalytics;
-import edu.pietro.team.letterhero.helper.ProcessingState;
-import edu.pietro.team.letterhero.social.Item;
-import edu.pietro.team.letterhero.social.MoneyTransfer;
-import edu.pietro.team.letterhero.social.User;
 
 public class OcrDetectionProcessor implements Detector.Processor<TextBlock> {
 
@@ -46,23 +35,6 @@ public class OcrDetectionProcessor implements Detector.Processor<TextBlock> {
         String ocrText = sb.toString();
         lastOcr = ocrText;
         Log.d(TAG, ocrText);
-        String iban = LangAnalytics.getIBAN(ocrText);
-        String amount = LangAnalytics.getAmount(ocrText);
-        String contact = LangAnalytics.findFamiliarFriends(ocrText);
-
-        if (!iban.equals("")) {
-            contact = AddressBook.getNameforIBAN(iban);
-        } else if (!contact.equals("")) {
-            iban = AddressBook.getIBANforName(contact);
-        }
-        if (!iban.equals("") || !contact.equals("")) {
-            User recipient = new User(contact, iban);
-            Item moneyTransferItem = new Item("Money transfer", "", "", null);
-            AmountOfMoney aom = amount.equals("") ? new AmountOfMoney(0.0)
-                    : new AmountOfMoney(Double.valueOf(amount));
-            /*EventBus.getDefault().post(new OnDocumentProcessed(
-                    new MoneyTransfer(recipient, moneyTransferItem, aom), ProcessingState.NOLOCK));*/
-        }
     }
 
     @Override

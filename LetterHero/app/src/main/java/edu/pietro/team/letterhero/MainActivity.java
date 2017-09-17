@@ -8,7 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.media.Image;
+import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -23,10 +23,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -48,23 +46,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import edu.pietro.team.letterhero.entities.Document;
-import edu.pietro.team.letterhero.event.FeedFilterClicked;
 import edu.pietro.team.letterhero.event.OnDocumentProcessed;
 import edu.pietro.team.letterhero.event.OnErrorDuringDetectionPostProcessing;
 import edu.pietro.team.letterhero.event.OnImageCaptureRequested;
 import edu.pietro.team.letterhero.event.OnStartDetectionPostProcessing;
 import edu.pietro.team.letterhero.event.OnStopMessage;
-import edu.pietro.team.letterhero.helper.DownloadImageTask;
 import edu.pietro.team.letterhero.helper.ProcessingState;
-import edu.pietro.team.letterhero.helper.Utils;
-import edu.pietro.team.letterhero.social.MoneyTransfer;
-import edu.pietro.team.letterhero.social.User;
 import edu.pietro.team.letterhero.vision.CameraSourcePreview;
 import edu.pietro.team.letterhero.vision.ImageFetchingDetector;
 import edu.pietro.team.letterhero.vision.OcrDetectionProcessor;
@@ -108,13 +100,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     public static MainActivity getCurrentActivity() {
         return currentActivity;
     }
-
-    private static String[] BT_CONTEXT_DEVICES = new String[] {
-            "04:59:06:09:52:06",
-            "f8:e0:79:4c:ea:e6",
-            "b4:ce:f6:22:d7:16",
-            "78:02:f8:e7:96:ae"
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,26 +213,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         return super.onCreateOptionsMenu(menu);
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_favorite:
-                String newTitle;
-                if (mFeedFilterIsPublic) {
-                    newTitle = "Show friends purchases";
-                } else {
-                    newTitle = "Show own purchases";
-                }
-                mFeedFilterIsPublic ^= true;
-                EventBus.getDefault().post(new FeedFilterClicked(!mFeedFilterIsPublic));
-                item.setTitle(newTitle);
-                return true;
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -320,6 +285,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         /*if (!onTryStartProcessing(ProcessingState.OBJECT_LOCK)){
             return;
         }*/
+
+        mCameraSource.stop();
+
+        Camera cam = Camera.open();
 
         mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
             @RequiresApi(api = Build.VERSION_CODES.M)

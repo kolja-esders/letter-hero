@@ -1,34 +1,12 @@
 package edu.pietro.team.letterhero.vision;
 
 import android.graphics.Bitmap;
-import android.graphics.ImageFormat;
-import android.graphics.Rect;
-import android.graphics.YuvImage;
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.Frame;
 
-import org.greenrobot.eventbus.EventBus;
-
-import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
-
-import edu.pietro.team.letterhero.MainActivity;
-import edu.pietro.team.letterhero.entities.AmountOfMoney;
-import edu.pietro.team.letterhero.event.OnErrorDuringDetectionPostProcessing;
-import edu.pietro.team.letterhero.event.OnDocumentProcessed;
-import edu.pietro.team.letterhero.helper.AddressBook;
-import edu.pietro.team.letterhero.helper.PostHelper;
-import edu.pietro.team.letterhero.helper.ProcessingState;
-import edu.pietro.team.letterhero.helper.SavePhotoTask;
-import edu.pietro.team.letterhero.social.MoneyTransfer;
-import edu.pietro.team.letterhero.social.User;
-
-/**
- * Created by maxim on 14.03.17.
- */
 
 public class ImageFetchingDetector extends Detector {
     Frame lastFrame = null;
