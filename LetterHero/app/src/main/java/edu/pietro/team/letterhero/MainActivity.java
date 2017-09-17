@@ -449,6 +449,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         imageView.setImageBitmap(bitmapImage);
 
+        if (context.containsKey("money")) {
+            setAddInfo(i++, "Amount", context.get("money"));
+        }
         if (numbers.containsKey("socialSecurityNumber")) {
             setAddInfo(i, "SOCIAL SECURITY NUMBER", numbers.get("socialSecurityNumber"));
             i++;
