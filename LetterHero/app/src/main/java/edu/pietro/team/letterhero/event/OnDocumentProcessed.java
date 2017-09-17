@@ -4,7 +4,6 @@ package edu.pietro.team.letterhero.event;
 import edu.pietro.team.letterhero.MainActivity;
 import edu.pietro.team.letterhero.entities.Document;
 import edu.pietro.team.letterhero.helper.ProcessingState;
-import edu.pietro.team.letterhero.social.MoneyTransfer;
 
 public class OnDocumentProcessed {
 
