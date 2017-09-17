@@ -1,7 +1,3 @@
-/**
- * Created by david on 13.03.17.
- */
-
 import org.apache.commons.codec.binary.Base64;
 
 public class Test {

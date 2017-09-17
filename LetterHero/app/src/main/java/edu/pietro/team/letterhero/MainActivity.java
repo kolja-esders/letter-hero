@@ -51,7 +51,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import edu.pietro.team.letterhero.entities.Document;
-import edu.pietro.team.letterhero.event.FeedFilterClicked;
 import edu.pietro.team.letterhero.event.OnDocumentProcessed;
 import edu.pietro.team.letterhero.event.OnErrorDuringDetectionPostProcessing;
 import edu.pietro.team.letterhero.event.OnImageCaptureRequested;
@@ -212,26 +211,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             menu.getItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
         return super.onCreateOptionsMenu(menu);
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_favorite:
-                String newTitle;
-                if (mFeedFilterIsPublic) {
-                    newTitle = "Show friends purchases";
-                } else {
-                    newTitle = "Show own purchases";
-                }
-                mFeedFilterIsPublic ^= true;
-                EventBus.getDefault().post(new FeedFilterClicked(!mFeedFilterIsPublic));
-                item.setTitle(newTitle);
-                return true;
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override
