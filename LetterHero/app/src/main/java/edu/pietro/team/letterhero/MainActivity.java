@@ -431,27 +431,61 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             category.setText(d.getCategory());
             category.setVisibility(View.VISIBLE);
         }
-        if (!d.getSender().isEmpty())
-        {
-            companyEdit.setText(d.getSender());
+        String sender = d.getSender();
+        if (sender.equals("luis")) {
+            sender = "Family Luis";
+        } else if (sender.equals("registration")) {
+            sender = "Registration Office";
+        } else if (sender.equals("telekom")) {
+            sender = "Deutsche Telekom AG";
         }
-        if(!d.getType().isEmpty()) {
-            typeEdit.setText(d.getType());
+
+        if (sender.length() > 1) {
+            sender = sender.substring(0, 1).toUpperCase() + sender.substring(1);
+        }
+        if (!sender.isEmpty()) {
+            companyEdit.setText(sender);
+        }
+        String inputType = d.getType();
+        String outType = "";
+        switch (inputType) {
+            case "new":
+            case "running":
+                outType = "New contract";
+                break;
+            case "passerez":
+            case "cordialement":
+                outType = "Order";
+                break;
+            case "reminder":
+            case "payment":
+                outType = "Reminder";
+                break;
+            case "social":
+            case "security":
+            case "washington":
+                outType = "General information";
+                break;
+        }
+
+
+
+        if(!outType.isEmpty()) {
+            typeEdit.setText(outType);
         }
 
         if (context.containsKey("dateCreation")) {
             dateEdit.setText(context.get("dateCreation"));
         }
 
-
         imageView.setImageBitmap(bitmapImage);
 
         if (numbers.containsKey("socialSecurityNumber")) {
-            setAddInfo(i, "Social security number", numbers.get("socialSecurityNumber"));
+            setAddInfo(i, "SOCIAL SECURITY NUMBER", numbers.get("socialSecurityNumber"));
             i++;
         }
         if (context.containsKey("dateEndOfContract")) {
-            setAddInfo(i++, "End of contract", context.get("dateEndOfContract"));
+            setAddInfo(i++, "END OF CONTRACT", context.get("dateEndOfContract"));
         }
     }
 
@@ -573,6 +607,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
                 EditText dateCreation = (EditText) v.findViewById(R.id.date);
                 TextView category = (TextView) v.findViewById(R.id.category);
+                EditText company = (EditText) v.findViewById(R.id.company);
 
                 EditText context1 = (EditText) v.findViewById(R.id.context1);
                 EditText context2 = (EditText) v.findViewById(R.id.context2);
@@ -581,6 +616,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 TextView contextHeader1 = (TextView) v.findViewById(R.id.header_context1);
                 TextView contextHeader2 = (TextView) v.findViewById(R.id.header_context2);
                 TextView contextHeader3 = (TextView) v.findViewById(R.id.header_context3);
+
+                company.setText("");
+                company.setHint("Unknown sender");
 
                 context1.setText("");
                 context2.setText("");
