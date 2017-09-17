@@ -338,7 +338,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
                             Frame frame = new Frame.Builder().setBitmap(bitmap).build();
 
-                            StringBuilder detectedTextBuilder = new StringBuilder(); ;
+                            StringBuilder detectedTextBuilder = new StringBuilder();
+                            StringBuilder tmp = new StringBuilder();
                             SparseArray<TextBlock> detectedTextRaw = mTextRecognizer.detect(frame);
                             for (int i = 0; i < detectedTextRaw.size(); ++i) {
                                 TextBlock item = detectedTextRaw.valueAt(i);
@@ -348,8 +349,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                                         Line l = (Line) components.get(j);
                                         detectedTextBuilder.append(l.getValue());
                                         detectedTextBuilder.append(" ");
+                                        tmp.append(l.getValue());
+
                                     }
                                 }
+
+                                Log.d("Recognizer", tmp.toString());
+                                tmp.setLength(0);
                             }
 
                             // add unique id to both send operations
@@ -393,7 +399,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         TextView category = (TextView) v.findViewById(R.id.category);
         EditText dateEdit = (EditText) v.findViewById(R.id.date);
         EditText typeEdit = (EditText) v.findViewById(R.id.type);
-        EditText contextEdit = (EditText) v.findViewById(R.id.context);
+        EditText contextEdit = (EditText) v.findViewById(R.id.context1);
         ImageView imageView = (ImageView) v.findViewById(R.id.img);
 
         if (!d.getCategory().isEmpty()) {
@@ -529,7 +535,22 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
                 EditText dateCreation = (EditText) v.findViewById(R.id.date);
                 TextView category = (TextView) v.findViewById(R.id.category);
-                ImageView recipientImage = (ImageView) v.findViewById(R.id.profileImage);
+
+                EditText context1 = (EditText) v.findViewById(R.id.context1);
+                EditText context2 = (EditText) v.findViewById(R.id.context2);
+                EditText context3 = (EditText) v.findViewById(R.id.context3);
+
+                TextView contextHeader1 = (TextView) v.findViewById(R.id.header_context1);
+                TextView contextHeader2 = (TextView) v.findViewById(R.id.header_context2);
+                TextView contextHeader3 = (TextView) v.findViewById(R.id.header_context3);
+
+                context1.setText("");
+                context2.setText("");
+                context3.setText("");
+
+                contextHeader1.setText("");
+                contextHeader2.setText("");
+                contextHeader3.setText("");
 
                 dateCreation.setText("");
                 category.setVisibility(View.INVISIBLE);

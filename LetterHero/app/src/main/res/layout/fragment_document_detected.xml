@@ -16,7 +16,6 @@
         android:layout_height="144dp"
         android:elevation="4dp"
         app:srcCompat="@android:color/white"
-        android:layout_toEndOf="@+id/context"
         android:id="@+id/white_bg"
         android:layout_alignParentStart="true" />
 
@@ -113,6 +112,7 @@
 
     <ImageView
         android:layout_width="wrap_content"
+        android:visibility="invisible"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="16dp"
@@ -171,7 +171,6 @@
         android:layout_alignStart="@+id/header_type" />
 
     <TextView
-        android:text="SOCIAL SECURITY NUMBER"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/transparentWhite"
@@ -186,7 +185,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/context1"
-        android:text="078-05-1120"
         android:layout_marginTop="0dp"
         android:textSize="18sp"
         android:textColorHint="@color/veryTransparentWhite"
@@ -197,7 +195,6 @@
         android:layout_alignStart="@+id/header_context1" />
 
     <TextView
-        android:text="SOCIAL SECURITY NUMBER"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/transparentWhite"
@@ -212,7 +209,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/context2"
-        android:text="078-05-1120"
         android:layout_marginTop="0dp"
         android:textSize="18sp"
         android:textColorHint="@color/veryTransparentWhite"
@@ -223,7 +219,6 @@
         android:layout_alignStart="@+id/header_context2" />
 
     <TextView
-        android:text="SOCIAL SECURITY NUMBER"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/transparentWhite"
@@ -238,7 +233,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/context3"
-        android:text="078-05-1120"
         android:layout_marginTop="0dp"
         android:textSize="18sp"
         android:textColorHint="@color/veryTransparentWhite"
