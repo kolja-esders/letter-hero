@@ -286,9 +286,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             return;
         }*/
 
-        mCameraSource.stop();
+//        mCameraSource.stop();
 
-        Camera cam = Camera.open();
+//        Camera cam = Camera.open();
 
         mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
             @RequiresApi(api = Build.VERSION_CODES.M)
@@ -400,9 +400,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             category.setText(d.getCategory());
             category.setVisibility(View.VISIBLE);
         }
-        String sender = d.getSender();
-        if (sender.equals("luis")) {
-            sender = "Family Luis";
+        String sender = d.getSender().trim();
+        if (sender.equals("henry")) {
+            sender = "Family Henry";
         } else if (sender.equals("registration")) {
             sender = "Registration Office";
         } else if (sender.equals("telekom")) {
@@ -422,8 +422,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             case "running":
                 outType = "New contract";
                 break;
-            case "passerez":
+            case "nous":
             case "cordialement":
+            case "vacances":
                 outType = "Order";
                 break;
             case "reminder":
@@ -436,8 +437,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 outType = "General information";
                 break;
         }
-
-
 
         if(!outType.isEmpty()) {
             typeEdit.setText(outType);
